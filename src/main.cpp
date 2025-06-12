@@ -38,14 +38,40 @@ class CaptiveRequestHandler : public AsyncWebHandler {
     }
   };
 
-U8G2_MAX7219_8X8_F_4W_SW_SPI u8g2(
-  U8G2_R0,     
-  clkPin,            
-  dataPin,            
-  csPin,             
-  U8X8_PIN_NONE,  
-  U8X8_PIN_NONE   
-);
+U8G2_MAX7219_8X8_F_4W_SW_SPI interface(U8G2_R0, clkPin, dataPin, csPin, U8X8_PIN_NONE, U8X8_PIN_NONE);
+class Display{
+  protected:
+    String color;
+    JsonArray displaystate;
+  public:
+    Display(String color): color(color) {
+      interface.begin();
+      interface.setFontMode(1);
+      interface.setBitmapMode(1);
+      interface.clearBuffer();
+    }
+
+    String getColor(){
+      return color;
+    }
+
+    JsonArray getState(){
+      return displaystate;
+    }
+
+    void drawArray(JsonArray display){
+      displaystate = display;
+      for (int row = 0; row < 8; row++) {
+        JsonArray rowArray = displaystate[row].as<JsonArray>();
+        for (int col = 0; col < 8; col++) {
+          int color = rowArray[col] ? 1 : 0;
+          interface.setDrawColor(color);
+          interface.drawPixel(col, row);
+        }
+      }
+      interface.sendBuffer();
+    }
+};
 
 void webpage() {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -61,8 +87,8 @@ void webpage() {
   });
 }
 
-void display_update(){
-  server.on("/api/display", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+void display_update(Display &current){
+  server.on("/api/display", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [&current](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
     String body;
     for (size_t i = 0; i < len; i++) {
       body += (char)data[i];
@@ -83,21 +109,15 @@ void display_update(){
     }
 
     JsonArray display = doc.as<JsonArray>();
-    for (int row = 0; row < display.size(); row++) {
-      JsonArray rowArray = display[row].as<JsonArray>();
-      for (int col = 0; col < rowArray.size(); col++) {
-        u8g2.setDrawColor(rowArray[col] ? 1 : 0);
-        u8g2.drawPixel(col, row);
-      }
-    }
-    u8g2.sendBuffer();
+    current.drawArray(display);
     request->send(200, "text/plain", "Display updated");
   });
 }
 
-void display_color(){
-  server.on("/api/display_color", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", displayColor);
+void display_color(Display &current){
+  String color = current.getColor();
+  server.on("/api/display_color", HTTP_GET, [color](AsyncWebServerRequest *request){
+    request->send(200, "text/plain", color.c_str());
   });
 }
 
@@ -119,15 +139,13 @@ void setup() {
   Serial.println("index.html found");
 
   Serial.println("Initializing display...");
-  u8g2.begin();
-  u8g2.setFontMode(1);
-  u8g2.setBitmapMode(1);
+  Display current(displayColor);
   Serial.println("Display initialized");
 
   Serial.println("Setting up webpage..");
   webpage();
-  display_color();
-  display_update();
+  display_color(current);
+  display_update(current);
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
