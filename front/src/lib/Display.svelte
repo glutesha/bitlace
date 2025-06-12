@@ -1,17 +1,20 @@
 <script lang="ts">
     import Pixel from './Pixel.svelte'
-    const SIZE = 8;
-
-    let display = Array.from({ length: SIZE }, () =>
-        Array.from({ length: SIZE }, () => false)
-    );
+    import {currentDisplay, fetchDisplay} from '../display'
+    import { onMount } from 'svelte';
 
     function togglePixel(x: number, y: number) {
         display[x][y] = !display[x][y];
         display = [...display.map(row => [...row])];
         updateDisplay();
-        console.log(display);
     }
+
+    onMount(async () => {
+        await fetchDisplay();  
+        display = $currentDisplay;
+    });
+
+    let display = $currentDisplay;
 
     async function updateDisplay() {
         try {

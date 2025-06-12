@@ -42,31 +42,36 @@ U8G2_MAX7219_8X8_F_4W_SW_SPI interface(U8G2_R0, clkPin, dataPin, csPin, U8X8_PIN
 class Display{
   protected:
     String color;
-    JsonArray displaystate;
+    bool displaystate[8][8];
   public:
     Display(String color): color(color) {
       interface.begin();
       interface.setFontMode(1);
       interface.setBitmapMode(1);
       interface.clearBuffer();
+      for(int row = 0; row < 8; row++){
+        for(int col = 0; col < 8; col++){
+          displaystate[row][col] = false;
+        }
+      }
     }
 
     String getColor(){
       return color;
     }
 
-    JsonArray getState(){
+    bool (&getState())[8][8] {
       return displaystate;
     }
 
     void drawArray(JsonArray display){
-      displaystate = display;
       for (int row = 0; row < 8; row++) {
-        JsonArray rowArray = displaystate[row].as<JsonArray>();
+        JsonArray rowArray = display[row].as<JsonArray>();
         for (int col = 0; col < 8; col++) {
           int color = rowArray[col] ? 1 : 0;
           interface.setDrawColor(color);
           interface.drawPixel(col, row);
+          displaystate[row][col] = rowArray[col];
         }
       }
       interface.sendBuffer();
@@ -86,6 +91,58 @@ void webpage() {
 
   server.onNotFound([](AsyncWebServerRequest *request){
     request->send(LittleFS, "/dist/index.html", "text/html");
+  });
+}
+
+void save_state(Display &current){
+  File stateFile = LittleFS.open("/state.json", "w");
+  JsonDocument stateDoc;
+  bool (&state)[8][8] = current.getState();
+  JsonArray arr = stateDoc.to<JsonArray>();
+  for (int i = 0; i < 8; ++i) {
+    JsonArray row = arr.add<JsonArray>();
+    for (int j = 0; j < 8; ++j) {
+      row.add(state[i][j]); 
+    }
+  }
+
+  serializeJson(stateDoc, stateFile);
+  stateFile.close();
+}
+
+void load_state(Display &current){
+  File stateFile = LittleFS.open("/state.json", "r");
+  if(!stateFile){
+    Serial.println("No file!");
+  }
+  JsonDocument stateDoc;
+  DeserializationError err = deserializeJson(stateDoc, stateFile);
+  if(err){
+    Serial.print("deserializeJson() ");
+    Serial.println(err.c_str());
+    return;
+  }
+  JsonArray arr = stateDoc.as<JsonArray>();
+  current.drawArray(arr);
+  stateFile.close();
+  Serial.println("Loaded state!");
+}
+
+void display_state(Display &current){
+  server.on("/api/display", HTTP_GET, [&current](AsyncWebServerRequest *request){
+    JsonDocument response;
+    bool (&state)[8][8] = current.getState();
+    JsonArray arr = response.to<JsonArray>();
+    for (int i = 0; i < 8; ++i) {
+      JsonArray row = arr.add<JsonArray>();
+      for (int j = 0; j < 8; ++j) {
+        row.add(state[i][j]); 
+      }
+    }
+    String result;
+    serializeJson(response, result);
+    Serial.println(result);
+    request->send(200, "application/json", result);
   });
 }
 
@@ -112,6 +169,7 @@ void display_update(Display &current){
 
     JsonArray display = doc.as<JsonArray>();
     current.drawArray(display);
+    save_state(current);
     request->send(200, "text/plain", "Display updated");
   });
 }
@@ -123,18 +181,10 @@ void display_color(Display &current){
   });
 }
 
-void display_state(Display &current){
-  server.on("/api/display_color", HTTP_GET, [&current](AsyncWebServerRequest *request){
-    JsonArray state = current.getState();
-    String statestring;
-    serializeJson(state, statestring);
-    request->send(200, "application/json", statestring);
-  });
-}
 
 void setup() {
   Serial.begin(9600);
-  delay(1000);
+  delay(3000);
   Serial.println("Starting...");
 
   if(!LittleFS.begin()) {
@@ -153,10 +203,14 @@ void setup() {
   current = new Display(displayColor);
   Serial.println("Display initialized");
 
+  Serial.println("Loading state...");
+  load_state(*current);
+
   Serial.println("Setting up webpage..");
   webpage();
   display_color(*current);
   display_update(*current);
+  display_state(*current);
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
