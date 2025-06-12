@@ -184,7 +184,6 @@ void display_color(Display &current){
 
 void setup() {
   Serial.begin(9600);
-  delay(3000);
   Serial.println("Starting...");
 
   if(!LittleFS.begin()) {
