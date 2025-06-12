@@ -73,6 +73,8 @@ class Display{
     }
 };
 
+Display* current; 
+
 void webpage() {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(LittleFS, "/dist/index.html", "text/html");
@@ -115,9 +117,18 @@ void display_update(Display &current){
 }
 
 void display_color(Display &current){
-  String color = current.getColor();
-  server.on("/api/display_color", HTTP_GET, [color](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", color.c_str());
+  server.on("/api/display_color", HTTP_GET, [&current](AsyncWebServerRequest *request){
+    String color = current.getColor();
+    request->send(200, "text/plain", color);
+  });
+}
+
+void display_state(Display &current){
+  server.on("/api/display_color", HTTP_GET, [&current](AsyncWebServerRequest *request){
+    JsonArray state = current.getState();
+    String statestring;
+    serializeJson(state, statestring);
+    request->send(200, "application/json", statestring);
   });
 }
 
@@ -139,13 +150,13 @@ void setup() {
   Serial.println("index.html found");
 
   Serial.println("Initializing display...");
-  Display current(displayColor);
+  current = new Display(displayColor);
   Serial.println("Display initialized");
 
   Serial.println("Setting up webpage..");
   webpage();
-  display_color(current);
-  display_update(current);
+  display_color(*current);
+  display_update(*current);
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
