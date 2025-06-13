@@ -1,6 +1,7 @@
 <script lang="ts">
     import Pixel from './Pixel.svelte'
-    import {currentDisplay, fetchDisplay} from '../display'
+    import { currentDisplay, fetchDisplay } from '../display'
+    import { fetchTheme } from '../theme';
     import { onMount } from 'svelte';
 
     function togglePixel(x: number, y: number) {
@@ -11,6 +12,7 @@
 
     onMount(async () => {
         await fetchDisplay();  
+        await fetchTheme();  
         display = $currentDisplay;
     });
 
@@ -34,7 +36,7 @@
     }
 </script>
 
-<div class="flex flex-col items-center bg-black gap-3 p-2 rounded-xl">
+<div class="flex flex-col items-center bg-black gap-3 p-2 rounded-xl shadow-2xl shadow-black">
 {#each display as row, rowIndex}
     <div class="flex flex-row gap-3">
         {#each row as pixel, pixelIndex}

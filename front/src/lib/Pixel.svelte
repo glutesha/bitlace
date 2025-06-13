@@ -1,10 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { currentTheme, fetchTheme } from '../theme';
-
-  onMount(async () => {
-    await fetchTheme();  
-  });
+  import { currentTheme } from '../theme';
 
   export let lit: boolean = false;
   export let onClick: () => void;
