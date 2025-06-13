@@ -141,7 +141,6 @@ void display_state(Display &current){
     }
     String result;
     serializeJson(response, result);
-    Serial.println(result);
     request->send(200, "application/json", result);
   });
 }
