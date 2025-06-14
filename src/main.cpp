@@ -17,6 +17,7 @@ AsyncWebServer server(80);
 const char* ssid = SSID;
 const char* password = PASSWORD;
 const int channel = CHANNEL;
+const int brightness = BRIGHTNESS;
 const bool hidden = HIDDEN;
 const char* displayColor = DISPLAY_COLOR;
 
@@ -47,8 +48,10 @@ class Display{
     Display(String color): color(color) {
       interface.begin();
       interface.setFontMode(1);
+      interface.setContrast(brightness*16);
       interface.setBitmapMode(1);
       interface.clearBuffer();
+      
       for(int row = 0; row < 8; row++){
         for(int col = 0; col < 8; col++){
           displaystate[row][col] = false;

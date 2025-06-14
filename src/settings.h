@@ -6,3 +6,4 @@
 #define DATA 3
 #define CLK 1
 #define CS 2
+#define BRIGHTNESS 1
