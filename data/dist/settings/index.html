@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Settings</title>
         <link rel="icon" type="image/x-icon" href="/assets/favicon-BBnYPRQ7.ico">
+      <script type="module" crossorigin src="/assets/settings-BE0_BbM4.js"></script>
+      <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
       <link rel="stylesheet" crossorigin href="/assets/main-BzOxvbw_.css">
     </head>
     <body class="bg-neutral-600 flex justify-center">
@@ -51,17 +53,7 @@
                     </select>
                     <div class="flex flex-col">
                         <label>// Brightness</label>
-                        <select id="brightness" name="brightness" class="bg-neutral-800 p-2 rounded-xl"></select>
-                        <script>
-                            const brightness = document.getElementById('brightness');
-
-                            for (let i = 1; i <= 10; i++) {
-                                const option = document.createElement('option');
-                                option.value = i;
-                                option.textContent = i;
-                                brightness.appendChild(option);
-                            }
-                        </script>
+                        <input type="range" id="brightness" name="brightness" min="0" max="10" value="1">
                     </div>
                     <label>// Pins</label>
                     <div class="flex flex-row gap-10">

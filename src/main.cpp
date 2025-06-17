@@ -120,7 +120,7 @@ void load_settings(){
     settingsDoc["password"] = PASSWORD;
     settingsDoc["hidden"] = HIDDEN;
     settingsDoc["channel"] = CHANNEL;
-    settingsDoc["displayColor"] = DISPLAY_COLOR;
+    settingsDoc["color"] = DISPLAY_COLOR;
     settingsDoc["brightness"] = BRIGHTNESS;
     settingsDoc["data"] = DATA;
     settingsDoc["clk"] = CLK;
@@ -132,8 +132,16 @@ void load_settings(){
   settingsFile.close();
 }
 
-void settings_form(Display &current){
-  server.on("/api/settings", HTTP_GET, [&current](AsyncWebServerRequest *request){
+void settings(){
+  server.on("/api/settings", HTTP_GET, [](AsyncWebServerRequest *request){
+    String response;
+    serializeJson(settingsDoc, response);
+    request->send(200, "application/json", response);
+  }
+);}
+
+void settings_form(){
+  server.on("/api/settings", HTTP_GET, [](AsyncWebServerRequest *request){
     if(request->hasArg("ssid")){
       settingsDoc["ssid"] = request->arg("ssid").c_str();
     }
@@ -144,7 +152,7 @@ void settings_form(Display &current){
       settingsDoc["channel"] = request->arg("channel").toInt();
     }
     if(request->hasArg("color")){
-      settingsDoc["displayColor"] = request->arg("color").c_str();
+      settingsDoc["color"] = request->arg("color").c_str();
     }
     if(request->hasArg("brightness")){
       settingsDoc["brightness"] = request->arg("brightness").toInt();
@@ -279,7 +287,7 @@ void setup() {
   Serial.println("index.html found");
 
   Serial.println("Initializing display...");
-  current = new Display(settingsDoc["displayColor"], settingsDoc["brightness"]);
+  current = new Display(settingsDoc["color"], settingsDoc["brightness"]);
   Serial.println("Display initialized");
 
   Serial.println("Loading state...");
@@ -287,10 +295,11 @@ void setup() {
   
   Serial.println("Setting up webpage..");
   webpage();
+  settings();
+  settings_form();
   display_color(*current);
   display_update(*current);
   display_state(*current);
-  settings_form(*current);
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
