@@ -16,7 +16,7 @@
     });
 </script>
 
-<div class="flex flex-col items-center bg-black gap-3 p-2 rounded-xl shadow-2xl shadow-black">
+<div class="flex flex-col items-center bg-black gap-3 p-1 rounded-xl shadow-2xl shadow-black">
 {#each $currentDisplay as row, rowIndex}
     <div class="flex flex-row gap-3">
         {#each row as pixel, pixelIndex}

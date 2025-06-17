@@ -7,8 +7,8 @@
 
 <button aria-label="pixel" onclick={onClick}>
   {#if lit}
-    <div class={`${$currentTheme.color} size-10 rounded-full shadow-lg ${$currentTheme.shadow}`}></div>
+    <div class={`${$currentTheme.color} size-9 rounded-full shadow-lg ${$currentTheme.shadow}`}></div>
   {:else}
-    <div class="bg-neutral-400 hover:bg-neutral-500 size-10 rounded-full"></div>
+    <div class="bg-neutral-400 hover:bg-neutral-500 size-9 rounded-full"></div>
   {/if}
 </button>

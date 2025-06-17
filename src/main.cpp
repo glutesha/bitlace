@@ -16,14 +16,14 @@ AsyncWebServer server(80);
 
 const char* ssid = SSID;
 const char* password = PASSWORD;
-const int channel = CHANNEL;
-const int brightness = BRIGHTNESS;
-const bool hidden = HIDDEN;
+int channel = CHANNEL;
+int brightness = BRIGHTNESS;
+bool hidden = HIDDEN;
 const char* displayColor = DISPLAY_COLOR;
 
-const int dataPin = DATA;
-const int clkPin = CLK;
-const int csPin = CS;
+int dataPin = DATA;
+int clkPin = CLK;
+int csPin = CS;
 
 class CaptiveRequestHandler : public AsyncWebHandler {
   public:
@@ -59,6 +59,10 @@ class Display{
       }
     }
 
+    void setColor(String c){
+      color = c;
+    }
+
     String getColor(){
       return color;
     }
@@ -86,14 +90,48 @@ Display* current;
 void webpage() {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(LittleFS, "/dist/index.html", "text/html");
-  }).setFilter(ON_AP_FILTER);
+  });
 
-  server.serveStatic("/", LittleFS, "/dist/").setFilter(ON_AP_FILTER);
+  server.on("/settings", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(LittleFS, "/dist/settings/index.html", "text/html");
+  });
 
-  server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);
+  server.serveStatic("/", LittleFS, "/dist/");
+
+  server.addHandler(new CaptiveRequestHandler());
 
   server.onNotFound([](AsyncWebServerRequest *request){
     request->send(LittleFS, "/dist/index.html", "text/html");
+  });
+}
+
+void settings_form(Display &current){
+  server.on("/api/settings", HTTP_GET, [&current](AsyncWebServerRequest *request){
+    if(request->hasArg("ssid")){
+      ssid = request->arg("ssid").c_str();
+    }
+    if(request->hasArg("password")){
+      password = request->arg("password").c_str();
+    }
+    if(request->hasArg("channel")){
+      channel = request->arg("channel").toInt();
+    }
+    if(request->hasArg("color")){
+      displayColor = request->arg("color").c_str();
+    }
+    if(request->hasArg("brightness")){
+      brightness = request->arg("brightness").toInt();
+    }
+    if(request->hasArg("data")){
+      dataPin = request->arg("data").toInt();
+    }
+    if(request->hasArg("cs")){
+      csPin = request->arg("cs").toInt();
+    }
+    if(request->hasArg("clk")){
+      clkPin = request->arg("clk").toInt();
+    }
+    cDurrent(displayColor);
   });
 }
 
@@ -212,6 +250,7 @@ void setup() {
   display_color(*current);
   display_update(*current);
   display_state(*current);
+  settings_form();
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
