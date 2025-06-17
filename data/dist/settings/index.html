@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Settings</title>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+      <script type="module" crossorigin src="/assets/settings.js"></script>
+      <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill.js">
+      <link rel="stylesheet" crossorigin href="/assets/main.css">
+    </head>
+    <body class="bg-neutral-600 flex justify-center">
+        <div class="flex flex-col justify-center p-2 gap-2">
+            <form action="/api/settings" class="flex flex-col gap-4 font-mono text-2xl text-white">
+                <p class="text-3xl font-bold text-center py-5">Settings</p>
+                <div class="flex flex-col gap-2 font-mono bg-neutral-700 p-5 rounded-2xl">
+                    <p class="text-2xl text-center">WiFi</p>
+                    <label>// SSID</label>
+                    <input class="bg-neutral-800 rounded-2xl focus:outline-none border-3 border-neutral-800 focus:bg-neutral-700 text-white text-2xl px-5 py-2" type="text" id="ssid" name="ssid">
+                    <label>// Password</label>
+                    <input class="bg-neutral-800 rounded-2xl focus:outline-none border-3 border-neutral-800 focus:bg-neutral-700 text-white text-2xl px-5 py-2" type="text" id="password" name="password">
+                    <div class="flex flex-row gap-10">
+                        <div class="flex flex-col">
+                            <label>// Channel</label>
+                            <select id="channel" name="channel" class="bg-neutral-800 p-2 rounded-xl"></select>
+                            <script>
+                                const select = document.getElementById('channel');
+
+                                for (let i = 1; i <= 13; i++) {
+                                    const option = document.createElement('option');
+                                    option.value = i;
+                                    option.textContent = i;
+                                    select.appendChild(option);
+                                }
+                            </script>
+                        </div>
+                        <div class="flex flex-col justify-items-start">
+                            <label class="">// Hidden?</label>
+                            <input id="hidden" type="checkbox" name="hidden" value="true" class="h-10">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 font-mono bg-neutral-700 p-5 rounded-2xl">
+                    <p class="text-2xl text-center">Display</p>
+                    <label>// Color (Interface) </label>
+                    <select id="color" name="color" class="bg-neutral-800 p-2 rounded-xl">
+                        <option>red</option>
+                        <option>green</option>
+                        <option>blue</option>
+                        <option>purple</option>
+                        <option>orange</option>
+                        <option>white</option>
+                    </select>
+                    <div class="flex flex-col">
+                        <label>// Brightness</label>
+                        <input type="range" id="brightness" name="brightness" min="0" max="10" value="1">
+                    </div>
+                    <label>// Pins</label>
+                    <div class="flex flex-row gap-10">
+                            <div class="flex flex-col">
+                                <label class="text-gray-400">DATA</label>
+                                <select id="data" name="data" class="bg-neutral-800 p-2 rounded-xl"></select>
+                                <script>
+                                    const data = document.getElementById('data');
+
+                                    for (let i = 1; i <= 21; i++) {
+                                        const option = document.createElement('option');
+                                        option.value = i;
+                                        option.textContent = i;
+                                        data.appendChild(option);
+                                    }
+                                </script>
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-gray-400">CLK</label>
+                                <select id="clk" name="clk" class="bg-neutral-800 p-2 rounded-xl"></select>
+                                <script>
+                                    const clk = document.getElementById('clk');
+
+                                    for (let i = 1; i <= 21; i++) {
+                                        const option = document.createElement('option');
+                                        option.value = i;
+                                        option.textContent = i;
+                                        clk.appendChild(option);
+                                    }
+                                </script>
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-gray-400">CS</label>
+                                <select id="cs" name="cs" class="bg-neutral-800 p-2 rounded-xl"></select>
+                                <script>
+                                    const cs = document.getElementById('cs');
+
+                                    for (let i = 1; i <= 21; i++) {
+                                        const option = document.createElement('option');
+                                        option.value = i;
+                                        option.textContent = i;
+                                        cs.appendChild(option);
+                                    }
+                                </script>
+                        </div>
+                    </div>
+                </div>
+                <input value="Apply (Reboot)" type="submit" class="shadow-2xl shadow-neutral-900 bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-2xl text-2xl text-mono font-bold text-white py-2">
+            </form>
+            <button onclick="window.location.href = '/'" class="shadow-2xl shadow-neutral-900 bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 rounded-2xl text-2xl text-mono font-bold text-white py-2">Back</button>
+        </div>
+    </body>
+</html>

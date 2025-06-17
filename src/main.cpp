@@ -13,17 +13,7 @@ using namespace std;
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
-
-const char* ssid = SSID;
-const char* password = PASSWORD;
-const int channel = CHANNEL;
-const int brightness = BRIGHTNESS;
-const bool hidden = HIDDEN;
-const char* displayColor = DISPLAY_COLOR;
-
-const int dataPin = DATA;
-const int clkPin = CLK;
-const int csPin = CS;
+JsonDocument settingsDoc;
 
 class CaptiveRequestHandler : public AsyncWebHandler {
   public:
@@ -39,13 +29,14 @@ class CaptiveRequestHandler : public AsyncWebHandler {
     }
   };
 
-U8G2_MAX7219_8X8_F_4W_SW_SPI interface(U8G2_R0, clkPin, dataPin, csPin, U8X8_PIN_NONE, U8X8_PIN_NONE);
+U8G2_MAX7219_8X8_F_4W_SW_SPI interface(U8G2_R0, settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"], U8X8_PIN_NONE, U8X8_PIN_NONE);
 class Display{
   protected:
     String color;
+    int brightness;
     bool displaystate[8][8];
   public:
-    Display(String color): color(color) {
+    Display(String color, int brightness): color(color), brightness(brightness) {
       interface.begin();
       interface.setFontMode(1);
       interface.setContrast(brightness*16);
@@ -57,6 +48,10 @@ class Display{
           displaystate[row][col] = false;
         }
       }
+    }
+
+    void setColor(String c){
+      color = c;
     }
 
     String getColor(){
@@ -86,14 +81,101 @@ Display* current;
 void webpage() {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(LittleFS, "/dist/index.html", "text/html");
-  }).setFilter(ON_AP_FILTER);
+  });
 
-  server.serveStatic("/", LittleFS, "/dist/").setFilter(ON_AP_FILTER);
+  server.on("/settings", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(LittleFS, "/dist/settings/index.html", "text/html");
+  });
 
-  server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);
+  server.serveStatic("/", LittleFS, "/dist/");
+
+  server.addHandler(new CaptiveRequestHandler());
 
   server.onNotFound([](AsyncWebServerRequest *request){
     request->send(LittleFS, "/dist/index.html", "text/html");
+  });
+}
+
+void save_settings(){
+  File settingsFile = LittleFS.open("/settings.json", "w");
+  serializeJson(settingsDoc, settingsFile);
+  settingsFile.close();
+}
+
+void load_settings(){
+  bool loaderr = false;
+  File settingsFile = LittleFS.open("/settings.json", "r");
+  if(!settingsFile){
+    Serial.println("No file!");
+    loaderr = true;
+  }
+  DeserializationError err = deserializeJson(settingsDoc, settingsFile);
+  if(err){
+    Serial.print("settings deserializeJson() ");
+    Serial.println(err.c_str());
+    loaderr = true;
+  }
+  if(loaderr){
+    settingsDoc["ssid"] = SSID;
+    settingsDoc["password"] = PASSWORD;
+    settingsDoc["hidden"] = HIDDEN;
+    settingsDoc["channel"] = CHANNEL;
+    settingsDoc["color"] = DISPLAY_COLOR;
+    settingsDoc["brightness"] = BRIGHTNESS;
+    settingsDoc["data"] = DATA;
+    settingsDoc["clk"] = CLK;
+    settingsDoc["cs"] = CS;
+    return;
+  }
+
+  Serial.println("Loaded settings!");
+  settingsFile.close();
+}
+
+void settings(){
+  server.on("/api/settings", HTTP_GET, [](AsyncWebServerRequest *request){
+    String response;
+    serializeJson(settingsDoc, response);
+    request->send(200, "application/json", response);
+  }
+);}
+
+void settings_form(){
+  server.on("/api/settings", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(request->hasArg("ssid")){
+      settingsDoc["ssid"] = request->arg("ssid").c_str();
+    }
+    if(request->hasArg("password")){
+      settingsDoc["password"] = request->arg("password").c_str();
+    }
+    if(request->hasArg("channel")){
+      settingsDoc["channel"] = request->arg("channel").toInt();
+    }
+    if(request->hasArg("color")){
+      settingsDoc["color"] = request->arg("color").c_str();
+    }
+    if(request->hasArg("brightness")){
+      settingsDoc["brightness"] = request->arg("brightness").toInt();
+    }
+    if(request->hasArg("hidden")){
+      if(request->arg("hidden").c_str() == "true"){
+        settingsDoc["hidden"] = true;
+      }
+      else{
+        settingsDoc["hidden"] = false;
+      }
+    }
+    if(request->hasArg("data")){
+      settingsDoc["data"] = request->arg("data").toInt();
+    }
+    if(request->hasArg("cs")){
+      settingsDoc["cs"] = request->arg("cs").toInt();
+    }
+    if(request->hasArg("clk")){
+      settingsDoc["clk"] = request->arg("clk").toInt();
+    }
+    save_settings();
+    abort();
   });
 }
 
@@ -117,11 +199,12 @@ void load_state(Display &current){
   File stateFile = LittleFS.open("/state.json", "r");
   if(!stateFile){
     Serial.println("No file!");
+    return;
   }
   JsonDocument stateDoc;
   DeserializationError err = deserializeJson(stateDoc, stateFile);
   if(err){
-    Serial.print("deserializeJson() ");
+    Serial.print("state deserializeJson() ");
     Serial.println(err.c_str());
     return;
   }
@@ -194,6 +277,9 @@ void setup() {
   }
   Serial.println("File system mounted");
 
+  Serial.println("Loading settings...");
+  load_settings();
+
   if(!LittleFS.exists("/dist/index.html")) {
     Serial.println("index.html not found");
     return;
@@ -201,30 +287,32 @@ void setup() {
   Serial.println("index.html found");
 
   Serial.println("Initializing display...");
-  current = new Display(displayColor);
+  current = new Display(settingsDoc["color"], settingsDoc["brightness"]);
   Serial.println("Display initialized");
 
   Serial.println("Loading state...");
   load_state(*current);
-
+  
   Serial.println("Setting up webpage..");
   webpage();
+  settings();
+  settings_form();
   display_color(*current);
   display_update(*current);
   display_state(*current);
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
-  Serial.println(ssid);
+  Serial.println(settingsDoc["ssid"].as<String>());
   Serial.print("Password: ");
-  Serial.println(password);
+  Serial.println(settingsDoc["password"].as<String>());
   Serial.print("Channel: ");
-  Serial.println(channel);
+  Serial.println(settingsDoc["channel"].as<String>());
   Serial.print("Hidden: ");
-  Serial.println(hidden ? "true" : "false");
+  Serial.println(settingsDoc["hidden"].as<bool>());
   Serial.println("Starting Access Point...");
   WiFi.mode(WIFI_AP);
-  WiFi.softAP(ssid, password, channel, hidden);
+  WiFi.softAP(settingsDoc["ssid"].as<String>(), settingsDoc["password"].as<String>(), settingsDoc["channel"].as<int>(), settingsDoc["hidden"].as<boolean>());
   Serial.print("AP IP address: ");
   Serial.println(WiFi.softAPIP());
   Serial.print("AP MAC address: ");
