@@ -1,0 +1,1 @@
+import"./modulepreload-polyfill.js";fetch("/api/settings").then(e=>e.json()).then(e=>{for(let t in e)t!="hidden"&&(document.getElementById(t).value=e[t]);document.getElementById("hidden").checked=e.hidden});

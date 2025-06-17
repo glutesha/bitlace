@@ -4,13 +4,13 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Settings</title>
-        <link rel="icon" type="image/x-icon" href="/assets/favicon-BBnYPRQ7.ico">
-      <script type="module" crossorigin src="/assets/settings-BE0_BbM4.js"></script>
-      <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-      <link rel="stylesheet" crossorigin href="/assets/main-BzOxvbw_.css">
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+      <script type="module" crossorigin src="/assets/settings.js"></script>
+      <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill.js">
+      <link rel="stylesheet" crossorigin href="/assets/main.css">
     </head>
     <body class="bg-neutral-600 flex justify-center">
-        <div class="flex justify-center p-20">
+        <div class="flex flex-col justify-center p-2 gap-2">
             <form action="/api/settings" class="flex flex-col gap-4 font-mono text-2xl text-white">
                 <p class="text-3xl font-bold text-center py-5">Settings</p>
                 <div class="flex flex-col gap-2 font-mono bg-neutral-700 p-5 rounded-2xl">
@@ -36,14 +36,14 @@
                         </div>
                         <div class="flex flex-col justify-items-start">
                             <label class="">// Hidden?</label>
-                            <input type="checkbox" name="hidden" value="true" class="h-10">
+                            <input id="hidden" type="checkbox" name="hidden" value="true" class="h-10">
                         </div>
                     </div>
                 </div>
                 <div class="flex flex-col gap-2 font-mono bg-neutral-700 p-5 rounded-2xl">
                     <p class="text-2xl text-center">Display</p>
                     <label>// Color (Interface) </label>
-                    <select name="color" class="bg-neutral-800 p-2 rounded-xl">
+                    <select id="color" name="color" class="bg-neutral-800 p-2 rounded-xl">
                         <option>red</option>
                         <option>green</option>
                         <option>blue</option>
@@ -101,8 +101,9 @@
                         </div>
                     </div>
                 </div>
-                <input value="Apply" type="submit" class="shadow-2xl shadow-neutral-900 bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 rounded-2xl text-2xl text-mono font-bold text-white py-2">
+                <input value="Apply (Reboot)" type="submit" class="shadow-2xl shadow-neutral-900 bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-2xl text-2xl text-mono font-bold text-white py-2">
             </form>
+            <button onclick="window.location.href = '/'" class="shadow-2xl shadow-neutral-900 bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 rounded-2xl text-2xl text-mono font-bold text-white py-2">Back</button>
         </div>
     </body>
 </html>

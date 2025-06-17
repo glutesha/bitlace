@@ -10,7 +10,12 @@ export default defineConfig({
       input: {
         main: 'index.html',
         settings: 'settings/index.html'  
-      } 
+      },
+      output: {
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name][extname]',
+      }
     }
   },
   plugins: [svelte(), tailwindcss()],
