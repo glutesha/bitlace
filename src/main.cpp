@@ -17,99 +17,6 @@ DNSServer dnsServer;
 AsyncWebServer server(80);
 JsonDocument settingsDoc;
 
-void save_settings(){
-  File settingsFile = LittleFS.open("/settings.json", "w");
-  serializeJson(settingsDoc, settingsFile);
-  settingsFile.close();
-}
-
-void load_settings(){
-  bool loaderr = false;
-  File settingsFile = LittleFS.open("/settings.json", "r");
-  if(!settingsFile){
-    Serial.println("No file!");
-    loaderr = true;
-  }
-  DeserializationError err = deserializeJson(settingsDoc, settingsFile);
-  if(err){
-    Serial.print("settings deserializeJson() ");
-    Serial.println(err.c_str());
-    loaderr = true;
-  }
-  if(loaderr){
-    settingsDoc["ssid"] = SSID;
-    settingsDoc["password"] = PASSWORD;
-    settingsDoc["hidden"] = HIDDEN;
-    settingsDoc["channel"] = CHANNEL;
-    settingsDoc["color"] = DISPLAY_COLOR;
-    settingsDoc["brightness"] = BRIGHTNESS;
-    settingsDoc["data"] = DATA;
-    settingsDoc["clk"] = CLK;
-    settingsDoc["cs"] = CS;
-    return;
-  }
-
-  Serial.println("Loaded settings!");
-  settingsFile.close();
-}
-
-
-void settings_form(){
-  server.on("/api/settings", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(request->args() == 0){
-      String response;
-      serializeJson(settingsDoc, response);
-      request->send(200, "application/json", response);
-      return;
-    }
-
-    if(request->hasArg("ssid")){
-      settingsDoc["ssid"] = request->arg("ssid").c_str();
-    }
-    if(request->hasArg("password")){
-      settingsDoc["password"] = request->arg("password").c_str();
-    }
-    if(request->hasArg("channel")){
-      settingsDoc["channel"] = request->arg("channel").toInt();
-    }
-    if(request->hasArg("color")){
-      settingsDoc["color"] = request->arg("color").c_str();
-    }
-    if(request->hasArg("brightness")){
-      settingsDoc["brightness"] = request->arg("brightness").toInt();
-    }
-    if(request->hasArg("hidden")){
-      if(request->arg("hidden").c_str() == "true"){
-        settingsDoc["hidden"] = true;
-      }
-      else{
-        settingsDoc["hidden"] = false;
-      }
-    }
-    if(request->hasArg("data")){
-      settingsDoc["data"] = request->arg("data").toInt();
-    }
-    if(request->hasArg("cs")){
-      settingsDoc["cs"] = request->arg("cs").toInt();
-    }
-    if(request->hasArg("clk")){
-      settingsDoc["clk"] = request->arg("clk").toInt();
-    }
-
-    save_settings();
-    ESP.restart();
-  });
-}
-
-
-
-void display_color(Display &current){
-  server.on("/api/display_color", HTTP_GET, [&current](AsyncWebServerRequest *request){
-    String color = current.getColor();
-    request->send(200, "text/plain", color);
-  });
-}
-
 void setup() {
   Serial.begin(9600);
   Serial.println("Starting...");
@@ -136,11 +43,7 @@ void setup() {
   load_state(*current);
   
   Serial.println("Setting up webpage..");
-  webpage();
-  settings_form();
-  display_color(*current);
-  display_update(*current);
-  display_state(*current);
+
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");

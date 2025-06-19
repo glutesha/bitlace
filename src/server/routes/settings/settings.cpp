@@ -42,6 +42,6 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       settingsDoc["clk"] = request->arg("clk").toInt();
     }
 
-    save_settings();
+    save_settings(settingsDoc);
     ESP.restart();
 });}
