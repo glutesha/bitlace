@@ -1,0 +1,1 @@
+<button on:click = {() => window.location.href = '/settings'} class="bg-lime-800 hover:bg-lime-900 active:bg-lime-950 rounded-3xl size-xl text-white px-5 py-3 text-3xl shadow-2xl font-bold shadow-black">Settings</button>
