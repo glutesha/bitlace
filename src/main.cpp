@@ -4,19 +4,18 @@
 #include <WiFi.h>
 #include <DNSServer.h>
 #include <AsyncTCP.h>
-#include "ESPAsyncWebServer.h"
+#include <ESPAsyncWebServer.h>
 #include <settings.h>
 #include <LittleFS.h>
 #include <ArduinoJson.h>
 
 #include "display/display.h"
-#include "server/captive_portal/captive.h"
+
 using namespace std;
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
 JsonDocument settingsDoc;
-Display* current; 
 
 void save_settings(){
   File settingsFile = LittleFS.open("/settings.json", "w");
@@ -130,7 +129,7 @@ void setup() {
   }
   Serial.println("index.html found");
   Serial.println("Initializing display...");
-  current = new Display(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
+  Display current(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
   Serial.println("Display initialized");
 
   Serial.println("Loading state...");

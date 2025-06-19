@@ -25,4 +25,4 @@ server.on("/api/display", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL,
     current.drawArray(display);
     save_state(current);
     request->send(200, "text/plain", "Display updated");
-  });}
+});}
