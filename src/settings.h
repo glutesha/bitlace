@@ -3,7 +3,7 @@
 #define CHANNEL 1
 #define HIDDEN false
 #define DISPLAY_COLOR "red" // Options: red, green, blue, orange, purple, white
-#define DATA 3
-#define CLK 1
-#define CS 2
-#define BRIGHTNESS 1
+#define DATA 7
+#define CLK 5
+#define CS 6
+#define BRIGHTNESS 10

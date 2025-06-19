@@ -29,14 +29,18 @@ class CaptiveRequestHandler : public AsyncWebHandler {
     }
   };
 
-U8G2_MAX7219_8X8_F_4W_SW_SPI interface(U8G2_R0, settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"], U8X8_PIN_NONE, U8X8_PIN_NONE);
+
 class Display{
   protected:
     String color;
     int brightness;
+    int clk;
+    int data;
+    int cs;
     bool displaystate[8][8];
+    U8G2_MAX7219_8X8_F_4W_SW_SPI interface;
   public:
-    Display(String color, int brightness): color(color), brightness(brightness) {
+    Display(String color, int brightness, int clk, int data, int cs): clk(clk), data(data), cs(cs), interface(U8G2_R0, clk, data, cs, U8X8_PIN_NONE, U8X8_PIN_NONE), color(color), brightness(brightness) {
       interface.begin();
       interface.setFontMode(1);
       interface.setContrast(brightness*16);
@@ -132,16 +136,16 @@ void load_settings(){
   settingsFile.close();
 }
 
-void settings(){
-  server.on("/api/settings", HTTP_GET, [](AsyncWebServerRequest *request){
-    String response;
-    serializeJson(settingsDoc, response);
-    request->send(200, "application/json", response);
-  }
-);}
 
 void settings_form(){
   server.on("/api/settings", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(request->args() == 0){
+      String response;
+      serializeJson(settingsDoc, response);
+      request->send(200, "application/json", response);
+      return;
+    }
+
     if(request->hasArg("ssid")){
       settingsDoc["ssid"] = request->arg("ssid").c_str();
     }
@@ -174,8 +178,9 @@ void settings_form(){
     if(request->hasArg("clk")){
       settingsDoc["clk"] = request->arg("clk").toInt();
     }
+
     save_settings();
-    abort();
+    ESP.restart();
   });
 }
 
@@ -285,9 +290,8 @@ void setup() {
     return;
   }
   Serial.println("index.html found");
-
   Serial.println("Initializing display...");
-  current = new Display(settingsDoc["color"], settingsDoc["brightness"]);
+  current = new Display(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
   Serial.println("Display initialized");
 
   Serial.println("Loading state...");
@@ -295,7 +299,6 @@ void setup() {
   
   Serial.println("Setting up webpage..");
   webpage();
-  settings();
   settings_form();
   display_color(*current);
   display_update(*current);
