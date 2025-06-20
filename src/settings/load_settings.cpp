@@ -1,11 +1,5 @@
 #include "settings.h"
 
-void save_settings(JsonDocument &settingsDoc){
-  File settingsFile = LittleFS.open("/settings.json", "w");
-  serializeJson(settingsDoc, settingsFile);
-  settingsFile.close();
-}
-
 void load_settings(JsonDocument &settingsDoc){
   bool loaderr = false;
   File settingsFile = LittleFS.open("/settings.json", "r");
