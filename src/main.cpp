@@ -74,8 +74,6 @@ void setup() {
   server.begin();
   Serial.println("Server started");
   Serial.println("Setup complete");
-  float voltage = read_battery_voltage(settingsDoc["battery"].as<int>(), settingsDoc["resistance"].as<int>());
-  Serial.println(voltage);
 }
 
 void loop() {
