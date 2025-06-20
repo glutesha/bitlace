@@ -1,4 +1,4 @@
-#include "display_color.h"
+#include "display.h"
 
 void display_color(AsyncWebServer &server, Display &current){
 server.on("/api/display_color", HTTP_GET, [&current](AsyncWebServerRequest *request){

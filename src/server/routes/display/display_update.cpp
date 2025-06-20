@@ -1,4 +1,4 @@
-#include "display_update.h"
+#include "display.h"
 
 void display_update(AsyncWebServer &server, Display &current){
 server.on("/api/display", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [&current](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {

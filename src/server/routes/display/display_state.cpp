@@ -1,4 +1,4 @@
-#include "display_state.h"
+#include "display.h"
 
 void display_state(AsyncWebServer &server, Display &current){
 server.on("/api/display", HTTP_GET, [&current](AsyncWebServerRequest *request){
