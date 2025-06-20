@@ -7,3 +7,5 @@
 #define CLK 5
 #define CS 6
 #define BRIGHTNESS 10
+#define BATTERY 2
+#define BUTTON 3

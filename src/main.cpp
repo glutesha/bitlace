@@ -19,6 +19,7 @@ AsyncWebServer server(80);
 JsonDocument settingsDoc;
 
 void setup() {
+  
   Serial.begin(9600);
   Serial.println("Starting...");
 

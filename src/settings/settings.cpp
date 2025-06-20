@@ -29,6 +29,8 @@ void load_settings(JsonDocument &settingsDoc){
     settingsDoc["data"] = DATA;
     settingsDoc["clk"] = CLK;
     settingsDoc["cs"] = CS;
+    settingsDoc["battery"] = BATTERY;
+    settingsDoc["button"] = BUTTON;
     return;
   }
 
