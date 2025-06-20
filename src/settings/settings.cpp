@@ -31,6 +31,7 @@ void load_settings(JsonDocument &settingsDoc){
     settingsDoc["cs"] = CS;
     settingsDoc["battery"] = BATTERY;
     settingsDoc["button"] = BUTTON;
+    settingsDoc["resistance"] = BATTERY_RESISTANCE;
     return;
   }
 
