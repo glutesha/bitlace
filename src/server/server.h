@@ -10,4 +10,4 @@
 #include "server/routes/settings/settings.h"
 #include "server/routes/battery/battery.h"
 
-void enable_routes(AsyncWebServer &server, Display &current, JsonDocument &settings);
+void enable_routes(AsyncWebServer &server, Display &current, JsonDocument &settings, Battery &power);

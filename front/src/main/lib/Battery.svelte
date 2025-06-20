@@ -1,10 +1,20 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import { battery, get_battery } from "../battery";
+
+    let interval: number;
 
     onMount(async () => {
         await get_battery();
+        interval = setInterval(() => {
+            get_battery();
+        }, 60000);
     });
+
+    onDestroy(() => {
+        clearInterval(interval);
+    });
+
 </script>
 
 <div class="p-4 absolute">

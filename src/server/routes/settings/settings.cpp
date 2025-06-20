@@ -13,6 +13,10 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       settingsDoc["ssid"] = request->arg("ssid").c_str();
     }
     if(request->hasArg("password")){
+      if(request->arg("password").length() < 8){
+        request->send(400, "text/plain", "Password too short!");
+        return;
+      }
       settingsDoc["password"] = request->arg("password").c_str();
     }
     if(request->hasArg("channel")){
@@ -40,6 +44,15 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
     }
     if(request->hasArg("clk")){
       settingsDoc["clk"] = request->arg("clk").toInt();
+    }
+    if(request->hasArg("battery")){
+      settingsDoc["battery"] = request->arg("battery").toInt();
+    }
+    if(request->hasArg("button")){
+      settingsDoc["button"] = request->arg("button").toInt();
+    }
+    if(request->hasArg("resistance")){
+      settingsDoc["resistance"] = request->arg("resistance").toInt();
     }
 
     save_settings(settingsDoc);

@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
+#include <Battery.h>
 
-#include "battery/battery.h"
 
-void battery(AsyncWebServer &server, JsonDocument &settingsDoc);
+void battery(AsyncWebServer &server, Battery &power);

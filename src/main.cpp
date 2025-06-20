@@ -8,12 +8,12 @@
 #include <settings.h>
 #include <LittleFS.h>
 #include <ArduinoJson.h>
+#include <Battery.h>
 
 #include "display/display.h"
 #include "display/state/state.h"
 #include "settings/settings.h"
 #include "server/server.h"
-#include "battery/battery.h"
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
@@ -38,15 +38,22 @@ void setup() {
     return;
   }
   Serial.println("index.html found");
+
   Serial.println("Initializing display...");
   static Display current(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
   Serial.println("Display initialized");
+
+  Serial.println("Initializing battery...");
+  static Battery power(3000, 4200, settingsDoc["battery"]);
+  power.begin(3300, settingsDoc["resistance"], &sigmoidal);
+  Serial.println("Battery initialized");
+
 
   Serial.println("Loading state...");
   load_state(current);
   
   Serial.println("Setting up webpage..");
-  enable_routes(server, current, settingsDoc);
+  enable_routes(server, current, settingsDoc, power);
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
