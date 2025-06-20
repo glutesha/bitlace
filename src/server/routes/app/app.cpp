@@ -1,7 +1,7 @@
-#include "main.h"
+#include "app.h"
 
-void main(AsyncWebServer &server) {
-server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+void app(AsyncWebServer &server) {
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
         request->send(LittleFS, "/dist/index.html", "text/html");
     });
 
@@ -13,6 +13,7 @@ server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
 
     server.addHandler(new CaptiveRequestHandler());
 
-     server.onNotFound([](AsyncWebServerRequest *request){
+    server.onNotFound([](AsyncWebServerRequest *request){
         request->send(LittleFS, "/dist/index.html", "text/html");
-});}
+    });
+}

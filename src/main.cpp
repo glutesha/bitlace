@@ -10,8 +10,9 @@
 #include <ArduinoJson.h>
 
 #include "display/display.h"
-
-using namespace std;
+#include "display/state/state.h"
+#include "settings/settings.h"
+#include "server/server.h"
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
@@ -28,7 +29,7 @@ void setup() {
   Serial.println("File system mounted");
 
   Serial.println("Loading settings...");
-  load_settings();
+  load_settings(settingsDoc);
 
   if(!LittleFS.exists("/dist/index.html")) {
     Serial.println("index.html not found");
@@ -36,14 +37,14 @@ void setup() {
   }
   Serial.println("index.html found");
   Serial.println("Initializing display...");
-  Display current(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
+  static Display current(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
   Serial.println("Display initialized");
 
   Serial.println("Loading state...");
-  load_state(*current);
+  load_state(current);
   
   Serial.println("Setting up webpage..");
-
+  enable_routes(server, current, settingsDoc);
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
