@@ -9,4 +9,3 @@
 #define BRIGHTNESS 10
 #define BATTERY 2
 #define BUTTON 3
-#define BATTERY_RESISTANCE 1100

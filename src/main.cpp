@@ -13,6 +13,7 @@
 #include "display/state/state.h"
 #include "settings/settings.h"
 #include "server/server.h"
+#include "battery/battery.h"
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
@@ -73,6 +74,8 @@ void setup() {
   server.begin();
   Serial.println("Server started");
   Serial.println("Setup complete");
+  float voltage = read_battery_voltage(settingsDoc["battery"].as<int>(), settingsDoc["resistance"].as<int>());
+  Serial.println(voltage);
 }
 
 void loop() {
