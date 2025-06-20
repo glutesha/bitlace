@@ -6,4 +6,5 @@ void enable_routes(AsyncWebServer &server, Display &current, JsonDocument &setti
   display_color(server, current);
   display_update(server, current);
   display_state(server, current);
+  battery(server, settings);
 }

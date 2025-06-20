@@ -2,5 +2,6 @@
 
 void battery(AsyncWebServer &server, JsonDocument &settingsDoc){
 server.on("/api/battery", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *request){
-    request->send(200, String(read_battery_percentage(settingsDoc["battery"])));
+    String response = String(read_battery_percentage(settingsDoc["battery"]));
+    request->send(200, "text/plain", response);
 });}
