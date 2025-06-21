@@ -2,6 +2,9 @@
 
 void settings_form(AsyncWebServer &server, JsonDocument &settingsDoc){
 server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *request){
+    File error = LittleFS.open("/dist/error/index.html", "r");
+    String response = error.readString();
+    
     if(request->args() == 0){
       String response;
       serializeJson(settingsDoc, response);
@@ -14,7 +17,8 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
     }
     if(request->hasArg("password")){
       if(request->arg("password").length() < 8){
-        request->send(400, "text/plain", "Password too short!");
+        response.replace("{ErrorMsg}", "400 Password too short!");
+        request->send(400, "text/html", response);
         return;
       }
       settingsDoc["password"] = request->arg("password").c_str();
@@ -52,12 +56,12 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       settingsDoc["button"] = request->arg("button").toInt();
     }
     if(request->hasArg("resistance")){
-      if(request->arg("resistance").toInt() == NULL){
-        request->send(400, "text/plain", "Invalid resistance ratio!");
+      if(request->arg("resistance").toInt() == 0){
+        response.replace("{ErrorMsg}", "400 Resistance ratio invalid!");
+        request->send(400, "text/html", response);
         return;
       }
       settingsDoc["resistance"] = request->arg("resistance").toInt();
-      
     }
 
     save_settings(settingsDoc);
