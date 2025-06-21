@@ -52,7 +52,12 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       settingsDoc["button"] = request->arg("button").toInt();
     }
     if(request->hasArg("resistance")){
+      if(request->arg("resistance").toInt() == NULL){
+        request->send(400, "text/plain", "Invalid resistance ratio!");
+        return;
+      }
       settingsDoc["resistance"] = request->arg("resistance").toInt();
+      
     }
 
     save_settings(settingsDoc);

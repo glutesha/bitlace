@@ -9,7 +9,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
-        settings: 'settings/index.html'  
+        settings: 'settings/index.html',
+        error: 'error/index.html'  
       },
       output: {
         entryFileNames: 'assets/[name].js',
