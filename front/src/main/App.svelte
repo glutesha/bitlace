@@ -2,6 +2,7 @@
   import Battery from './lib/Battery.svelte';
 import Display from './lib/Display.svelte';
     import Erase from './lib/Erase.svelte';
+    import Tool from './lib/Tool.svelte';
     import Settings from './lib/Settings.svelte';
 </script>
 
@@ -17,12 +18,14 @@ import Display from './lib/Display.svelte';
       />
       <p class="text-2xl text-white">By Glutesha Devices</p>
   </div>
-  <div class="flex justify-center items-center">
+  <div class="flex flex-col gap-2 justify-center items-center">
     <Display />
+    <Tool />
+    <div class="flex w-full justify-center items-center gap-2">
+      <Settings />
+      <Erase />
+    </div>
   </div>
-  <div class="flex justify-center items-center gap-5 p-5 mr-3">
-    <Settings />
-    <Erase />
-  </div>
+
 
 </main>
