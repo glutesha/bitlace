@@ -4,5 +4,4 @@
 #include <ArduinoJson.h>
 #include <Battery.h>
 
-
 void battery(AsyncWebServer &server, Battery &power);

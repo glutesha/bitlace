@@ -6,7 +6,7 @@
 #define DATA 7
 #define CLK 5
 #define CS 6
-#define BRIGHTNESS 10
+#define BRIGHTNESS 1
 #define BATTERY 2
 #define BUTTON 3
 #define BATTERY_RESISTANCE_RATIO 2
