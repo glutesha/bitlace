@@ -6,8 +6,8 @@ class Button{
     bool state;
     bool lastState;
     unsigned long debounce;
-    unsigned long last_debounce;
+    unsigned long lastDebounce;
 public:
     Button(int pin);
-    bool check();
+    bool read();
 };
