@@ -6,7 +6,6 @@ Display::Display(String color, int brightness, int clk, int data, int cs):
     cs(cs), 
     color(color), 
     brightness(brightness),
-    currentBrightness(brightness),
     interface(U8G2_R0, clk, data, cs, U8X8_PIN_NONE, U8X8_PIN_NONE)
 {
     interface.begin();
@@ -39,11 +38,4 @@ void Display::drawArray(JsonArray display){
         }
       }
       interface.sendBuffer();
-}
-
-void Display::cue(){
-    currentBrightness += 1;
-    currentBrightness = currentBrightness % 10;
-    interface.setContrast(currentBrightness*16);
-    interface.sendBuffer();
 }

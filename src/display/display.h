@@ -7,7 +7,6 @@ class Display{
   private:
     String color;
     int brightness;
-    int currentBrightness;
     int clk;
     int data;
     int cs;
@@ -19,5 +18,4 @@ class Display{
     String getColor();
     bool (&getState())[8][8];
     void drawArray(JsonArray display);
-    void cue();
 };
