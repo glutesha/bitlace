@@ -1,3 +1,4 @@
+#pragma once
 #define SSID "bitlace-gluten"
 #define PASSWORD "supersecretpassword"
 #define CHANNEL 1
