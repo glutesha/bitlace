@@ -95,7 +95,7 @@ void setup() {
 void loop() {
   dnsServer.processNextRequest();
   if(input->read()){
-    delay(100);
     sleep();
   }
+  current->cue();
 }

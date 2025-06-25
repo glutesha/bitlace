@@ -6,6 +6,10 @@ Display::Display(String color, int brightness, int clk, int data, int cs):
     cs(cs), 
     color(color), 
     brightness(brightness),
+    cueState(1),
+    cueCounter(1),
+    cueDelay(50),
+    cueLastMillis(0),
     interface(U8G2_R0, clk, data, cs, U8X8_PIN_NONE, U8X8_PIN_NONE)
 {
     interface.begin();
@@ -38,4 +42,20 @@ void Display::drawArray(JsonArray display){
         }
       }
       interface.sendBuffer();
+}
+
+void Display::cue(){
+    if((millis() - cueLastMillis) > cueDelay){
+        cueLastMillis = millis();
+        cueCounter += cueState;
+        if(cueCounter == 10){
+            cueState = -1;
+        }
+        if(cueCounter == 1){
+            cueState = 1;
+        }     
+        
+        interface.setContrast(cueCounter*16);
+        interface.sendBuffer();
+    }
 }
