@@ -17,10 +17,11 @@ class Display{
     bool displaystate[8][8];
     U8G2_MAX7219_8X8_F_4W_SW_SPI interface;
   public:
-    Display(String color, int brightness, int clk, int data, int cs);
-    void setColor(String c);
+    Display(String, int, int, int, int);
+    void setColor(String);
     String getColor();
     bool (&getState())[8][8];
-    void drawArray(JsonArray display);
+    void drawArray(JsonArray);
+    void setBrightness(int);
     void cue();
 };

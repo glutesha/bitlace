@@ -95,6 +95,7 @@ void setup() {
 void loop() {
   dnsServer.processNextRequest();
   if(input->read()){
+    current->setBrightness(settingsDoc["brightness"].as<int>());
     sleep();
   }
   current->cue();
