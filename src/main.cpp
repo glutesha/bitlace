@@ -14,10 +14,15 @@
 #include "display/state/state.h"
 #include "settings/settings.h"
 #include "server/server.h"
+#include "button/button.h"
+#include "deepsleep/deepsleep.h"
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
 JsonDocument settingsDoc;
+
+Display* current = nullptr;
+Button* input = nullptr;
 
 void setup() {
   
@@ -40,7 +45,7 @@ void setup() {
   Serial.println("index.html found");
 
   Serial.println("Initializing display...");
-  static Display current(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
+  current = new Display(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
   Serial.println("Display initialized");
 
   Serial.println("Initializing battery...");
@@ -48,12 +53,16 @@ void setup() {
   power.begin(3300, settingsDoc["resistance"], &sigmoidal);
   Serial.println("Battery initialized");
 
+  Serial.println("Initializing button...");
+  input = new Button(settingsDoc["button"].as<int>());
+  setWakeUp(settingsDoc["button"].as<int>());
+  Serial.println("Button initialized");
 
   Serial.println("Loading state...");
-  load_state(current);
+  load_state(*current);
   
   Serial.println("Setting up webpage..");
-  enable_routes(server, current, settingsDoc, power);
+  enable_routes(server, *current, settingsDoc, power);
   Serial.println("Webpage setup complete");
 
   Serial.print("Setting up AP: ");
@@ -85,4 +94,8 @@ void setup() {
 
 void loop() {
   dnsServer.processNextRequest();
+  if(input->read()){
+    delay(100);
+    sleep();
+  }
 }

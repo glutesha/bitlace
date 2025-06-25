@@ -1,6 +1,6 @@
 #include "button.h"
 
-Button::Button(int pin): pin(pin), lastState(HIGH), debounce(40) {
+Button::Button(int pin): pin(pin), lastState(HIGH), debounce(40), state(LOW) {
     pinMode(pin, INPUT_PULLUP);
 }
 
@@ -11,17 +11,13 @@ bool Button::read(){
     }
 
     if((millis() - lastDebounce) > debounce){
-        if(read != lastState){
+        if(read != state){
             state = read;
-        
-            if(state){
-                return state;
-            }
         }
     }
 
     lastState = read;
-    return false;
+    return !state;
 }
 
 // https://docs.arduino.cc/built-in-examples/digital/Debounce
