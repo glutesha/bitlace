@@ -4,7 +4,7 @@ Bitlace is a DIY retro decoration featuring a monochrome MAX7219 8x8 dot display
 ## Interface
 <img src="/img/interface1.png" height=600/> <img src="/img/interface2.png" height=600/>
 ## Building
-To build the application, run ```build_page.sh``` and then use ```Build Filesystem Image``` and ```Upload Filesystem Image``` project tasks on PlatformIO. Then use ```Upload```.
+To build the application, run ```build_page.sh``` and then use ```Build Filesystem Image``` and ```Upload Filesystem Image``` project tasks on PlatformIO. Then use ```Upload```. If your display starts showing the logo, it means that everything went smoothly.
 ## Settings 
 Default settings are located in ```src/settings.h```. You can set up pins and display color here. Also, you can specify your AP credentials. You can also set up your device via the settings page in the web interface.
 ## Technologies
