@@ -8,8 +8,8 @@ import Display from './lib/Display.svelte';
 
 <main>
   <Battery />
-  <div class="flex pt-8 flex-col items-center min-h-screen justify-center font-mono gap-2">
-    <p class="text-7xl font-bold text-white">Bitlace</p>
+  <div class="flex pt-8 flex-col items-center min-h-screen justify-center font-sans gap-2">
+    <p class="text-7xl font-bold text-white">Bit::lace</p>
     <div class="flex flex-row items-center gap-3">
       <img
         src="gluten.svg"
