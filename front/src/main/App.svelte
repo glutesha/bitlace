@@ -23,7 +23,7 @@ import Display from './lib/Display.svelte';
       <Display />
       <Tool />
     </div>
-    <div class="flex w-full justify-center items-center gap-2">
+    <div class="flex w-full justify-center items-center">
       <Settings />
       <Erase />
     </div>
