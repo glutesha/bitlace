@@ -19,8 +19,10 @@ import Display from './lib/Display.svelte';
       <p class="text-2xl text-white">By Glutesha Devices</p>
   </div>
   <div class="flex flex-col gap-2 justify-center items-center">
-    <Display />
-    <Tool />
+    <div class="flex flex-col bg-neutral-950 rounded-2xl gap-1">
+      <Display />
+      <Tool />
+    </div>
     <div class="flex w-full justify-center items-center gap-2">
       <Settings />
       <Erase />
