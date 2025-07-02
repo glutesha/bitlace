@@ -4,6 +4,8 @@ import Display from './lib/Display.svelte';
     import Erase from './lib/Erase.svelte';
     import Tool from './lib/Tool.svelte';
     import Settings from './lib/Settings.svelte';
+    import Gallery from './lib/Gallery.svelte';
+    import Save from './lib/Save.svelte';
 </script>
 
 <main>
@@ -24,10 +26,10 @@ import Display from './lib/Display.svelte';
       <Tool />
     </div>
     <div class="flex w-full justify-center items-center gap-2">
-      <Settings />
+      <Save />
       <Erase />
     </div>
+      <Gallery />
+      <Settings />
   </div>
-
-
 </main>

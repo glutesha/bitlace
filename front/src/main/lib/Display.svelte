@@ -26,7 +26,8 @@
 {#each $currentDisplay as row, rowIndex}
     <div class="flex flex-row gap-3" >
         {#each row as pixel, pixelIndex}
-            <Pixel lit={pixel} 
+            <Pixel
+                lit={pixel} 
                 onClick={(buttons) => togglePixel(buttons, rowIndex, pixelIndex)} 
             />
         {/each}
