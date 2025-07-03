@@ -19,6 +19,7 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       if(request->arg("password").length() < 8){
         response.replace("{ErrorMsg}", "400 Password too short!");
         request->send(400, "text/html", response);
+        error.close();
         return;
       }
       settingsDoc["password"] = request->arg("password").c_str();
@@ -59,11 +60,13 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       if(request->arg("resistance").toInt() == 0){
         response.replace("{ErrorMsg}", "400 Resistance ratio invalid!");
         request->send(400, "text/html", response);
+        error.close();
         return;
       }
       settingsDoc["resistance"] = request->arg("resistance").toInt();
     }
 
     save_settings(settingsDoc);
+    error.close();
     ESP.restart();
 });}
