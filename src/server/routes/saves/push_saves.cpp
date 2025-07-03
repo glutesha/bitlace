@@ -20,7 +20,10 @@ void push_saves(AsyncWebServer &server){
             return;
         }
         
+        saves.print(body);
+
         request->send(200, "text/plain", "Saved!");
+        
         saves.close();
         error.close();
     });}

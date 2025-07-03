@@ -9,5 +9,6 @@
 #include "server/routes/display/display.h"
 #include "server/routes/settings/settings.h"
 #include "server/routes/battery/battery.h"
+#include "server/routes/saves/saves.h"
 
 void enable_routes(AsyncWebServer &server, Display &current, JsonDocument &settings, Battery &power);

@@ -7,4 +7,6 @@ void enable_routes(AsyncWebServer &server, Display &current, JsonDocument &setti
   display_update(server, current);
   display_state(server, current);
   battery(server, power);
+  push_saves(server);
+  load_saves(server);
 }
