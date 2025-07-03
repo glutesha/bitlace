@@ -10,9 +10,9 @@
     })
 </script>
 
-<div class="bg-neutral-900 rounded-2xl mt-3 mb-2 overflow-hidden flex flex-col gap-4 w-full min-h-95 shadow-xl shadow-black/50 max-w-[380px]">
+<div class="bg-neutral-900 rounded-2xl mt-3 mb-2 overflow-hidden flex flex-col w-full min-h-95 shadow-xl shadow-black/50 max-w-[380px]">
   <Delete />
-  <div class="flex justify-center gap-2 flex-wrap p-4 ">
+  <div class="flex justify-center gap-2 flex-wrap p-4">
     {#each $pics as pic, id}
       <Preview id={id} display={pic} />
     {/each}

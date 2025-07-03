@@ -8,5 +8,5 @@
     }
 </script>
 
-<button on:click={onClick} class="bg-neutral-600 hover:bg-neutral-700 active:bg-red-900 max-h-15 size-xl text-white text-3xl font-bold flex-1 transition duration-200 ease-in-out" class:bg-red-800={$deletetool} class:hover:bg-red-950={$deletetool}>Gallery</button>
+<button on:click={onClick} class="bg-neutral-600 min-h-15 max-h-15 size-xl text-white text-3xl font-bold flex-1 transition duration-200 ease-in-out" class:bg-red-800={$deletetool}>Gallery</button>
 
