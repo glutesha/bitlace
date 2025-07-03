@@ -1,11 +1,11 @@
 <script lang="ts">
     import { fetchTheme } from '../theme';
     import { onMount } from 'svelte';
-    import { SIZE } from '../display';
+    import { load } from '../saves';
     import PreviewPixel from './PreviewPixel.svelte';
 
-    export const display = Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, () => false));
-    export const id: Number = 0;
+    export let display: boolean[][];
+    export let id;
 
     onMount(async () => {
         await fetchTheme();  
@@ -13,14 +13,14 @@
 
 </script>
 
-<div role="banner" oncontextmenu={e => e.preventDefault()} class="flex flex-1 touch-none select-none flex-col items-center bg-black gap-1 p-[2px] rounded-md">
-{#each display as row, rowIndex}
-    <div class="flex flex-row gap-1">
-        {#each row as pixel, pixelIndex}
+<button onclick={() => load(id)} oncontextmenu={e => e.preventDefault()} class="flex max-h-42.5 touch-none select-none flex-col items-center bg-black gap-1.5 p-[2px] rounded-md">
+{#each display as row}
+    <div class="flex flex-row gap-1.5">
+        {#each row as pixel}
             <PreviewPixel
                 lit={pixel} 
             />
         {/each}
     </div>
 {/each}
-</div>
+</button>

@@ -1,9 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
+#include <LittleFS.h>
 
-#include "saves/saves.h"
-
-void save(AsyncWebServer &server);
-void remove(AsyncWebServer &server);
-void get_saves(AsyncWebServer &server);
+void push_saves(AsyncWebServer &server);
+void load_saves(AsyncWebServer &server);

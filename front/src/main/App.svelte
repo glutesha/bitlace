@@ -20,8 +20,8 @@ import Display from './lib/Display.svelte';
       />
       <p class="text-2xl text-white">By Glutesha Devices</p>
   </div>
-  <div class="flex flex-col gap-2 justify-center items-center">
-    <div class="flex flex-col bg-neutral-950 rounded-2xl gap-1">
+  <div class="flex flex-col gap-2 justify-center items-center pb-5">
+    <div class="flex flex-col bg-neutral-950 rounded-2xl gap-1 shadow-xl shadow-black/20">
       <Display />
       <Tool />
     </div>

@@ -41,7 +41,7 @@ void Display::drawArray(JsonArray display){
           displaystate[row][col] = rowArray[col];
         }
       }
-      interface.sendBuffer();
+    interface.sendBuffer();
 }
 
 void Display::cue(){

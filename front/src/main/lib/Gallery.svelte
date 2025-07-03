@@ -7,12 +7,10 @@
     onMount(async () => {
         await fetchSaves();
     })
-
 </script>
-<div class="bg-neutral-900 rounded-2xl p-5 flex flex-wrap gap-2 ">
-  {#if $pics}
-    {#each Object.entries($pics) as [id, data]}
-      <Preview id={Number(id)} display={data} />
-    {/each}
-  {/if}
+
+<div class="bg-neutral-900 rounded-2xl mt-3 mb-2 p-4 gap-2 w-full min-h-95 shadow-xl shadow-black/50 flex justify-center flex-wrap max-w-[380px]">
+  {#each $pics as pic, id}
+    <Preview id={id} display={pic} />
+  {/each}
 </div>
