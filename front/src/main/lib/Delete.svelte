@@ -1,11 +1,12 @@
 <script lang="ts">
+    import { toggleDelete } from "../delete";
+    import { deletetool } from "../delete";
     import { pushSaves, save } from "../saves";
 
     async function onClick (){
-        save();
-        await pushSaves();
+        toggleDelete();
     }
 </script>
 
-<button on:click={onClick} class="bg-red-800 hover:bg-red-900 active:bg-red-950 rounded-3xl size-xl text-white px-5 py-3 text-3xl shadow-2xl font-bold shadow-black flex-1">Save</button>
+<button on:click={onClick} class="bg-neutral-600 hover:bg-neutral-700 active:bg-red-900 max-h-15 size-xl text-white text-3xl font-bold flex-1 transition duration-200 ease-in-out" class:bg-red-800={$deletetool} class:hover:bg-red-950={$deletetool}>Gallery</button>
 
