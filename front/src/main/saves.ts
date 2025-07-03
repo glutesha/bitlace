@@ -9,7 +9,7 @@ export async function fetchSaves() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-
+        
         const saves: Array<Array<Array<boolean>>> = await response.json();
         pics.set(saves);
     } catch(error) {

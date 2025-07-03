@@ -1,8 +1,8 @@
 #include "saves.h"
 
 void push_saves(AsyncWebServer &server){
-    server.on("/api/server", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
-        File saves = LittleFS.open("saves.json", "w");
+    server.on("/api/saves", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
+        File saves = LittleFS.open("/saves.json", "w");
         File error = LittleFS.open("/dist/error/index.html", "r");
         String errorpage = error.readString();
 
@@ -23,7 +23,7 @@ void push_saves(AsyncWebServer &server){
         saves.print(body);
 
         request->send(200, "text/plain", "Saved!");
-        
+
         saves.close();
         error.close();
     });}
