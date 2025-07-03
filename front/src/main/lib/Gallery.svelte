@@ -2,7 +2,7 @@
     import Preview from "./Preview.svelte";
     import { pics, fetchSaves } from "../saves";
     import { onMount } from "svelte";
-
+  
 
     onMount(async () => {
         await fetchSaves();

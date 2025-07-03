@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@theme {
+  --animate-jiggle: jiggle 0.2s ease-in-out infinite alternate;
+
+  @keyframes jiggle {
+    0% { transform: rotate(1deg); animation-timing-function: ease-in; }
+    50% { transform: rotate(-1.5deg); animation-timing-function: ease-out; }
+  }
+}
+

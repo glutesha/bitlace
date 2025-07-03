@@ -25,6 +25,14 @@ export async function save(){
     pics.update(old => [...old, get(currentDisplay)]);
 }
 
+export async function remove(id: number){
+    pics.update(old => {
+        const newpics = [...old]; 
+        newpics.splice(id, 1);  
+        return newpics; 
+        });
+}   
+
 export async function pushSaves() {
     try {
         const response = await fetch("/api/saves",{
