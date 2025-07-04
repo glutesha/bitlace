@@ -2,28 +2,32 @@
 
 void push_saves(AsyncWebServer &server){
     server.on("/api/saves", HTTP_POST, [](AsyncWebServerRequest *request){}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
-        File saves = LittleFS.open("/saves.json", "w");
-        File error = LittleFS.open("/dist/error/index.html", "r");
-        String errorpage = error.readString();
+        
+        if (index == 0) {
+            if(LittleFS.totalBytes() - LittleFS.usedBytes() <= request->contentLength()){
+                File error = LittleFS.open("/dist/error/index.html", "r");
+                String errorpage = error.readString();
+                errorpage.replace("{ErrorMsg}", "500 No LittleFS memory available!");
+                request->send(500, "text/html", errorpage);
+                error.close();
+                return;
+            }
 
-        String body;
-
-        for (size_t i = 0; i < len; i++) {
-            body += (char)data[i];
+            File *saves = new File(LittleFS.open("/saves.json", "w"));
+            request->_tempObject = saves;
         }
 
-        if(LittleFS.totalBytes() - LittleFS.usedBytes() <= request->contentLength()){
-            errorpage.replace("{ErrorMsg}", "500 No LittleFS memory available!");
-            request->send(500, "text/html", errorpage);
-            saves.close();
-            error.close();
-            return;
+        File *saves = static_cast<File *>(request->_tempObject);
+        if (saves && *saves) {
+            saves->write(data, len);
         }
         
-        saves.print(body);
-
-        request->send(200, "text/plain", "Saved!");
-
-        saves.close();
-        error.close();
+        if (index + len == total) {
+            if (saves) {
+                saves->close();
+                delete saves;
+                request->_tempObject = nullptr;
+            }
+            request->send(200, "text/plain", "Saved!");
+        }
     });}
