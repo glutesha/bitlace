@@ -13,7 +13,7 @@
     onClick(e.buttons);
   };
 
-$: cn = lit ? `${$currentTheme.color} size-9 rounded-full shadow-lg ${$currentTheme.shadow}` : `bg-neutral-700 hover:bg-neutral-500 size-9 rounded-full`
+$: cn = lit ? `${$currentTheme.color} size-10  rounded-full shadow-lg ${$currentTheme.shadow}` : `bg-neutral-700 hover:bg-neutral-500 size-10 rounded-full`
 </script>
 
 <button class={cn} aria-label="pixel" 

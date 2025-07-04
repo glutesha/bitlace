@@ -22,9 +22,9 @@
     });
 </script>
 
-<div role="banner" oncontextmenu={e => e.preventDefault()} class="flex touch-none select-none flex-col items-center bg-black gap-3 p-1 rounded-xl shadow-2xl shadow-black">
+<div role="banner" oncontextmenu={e => e.preventDefault()} class="flex touch-none select-none flex-col items-center bg-black gap-2 p-1 rounded-xl shadow-2xl shadow-black">
 {#each $currentDisplay as row, rowIndex}
-    <div class="flex flex-row gap-3" >
+    <div class="flex flex-row gap-2" >
         {#each row as pixel, pixelIndex}
             <Pixel
                 lit={pixel} 
