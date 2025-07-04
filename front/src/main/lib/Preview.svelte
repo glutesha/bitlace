@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { fetchTheme } from '../theme';
-    import { onMount } from 'svelte';
     import { load, pushSaves, remove } from '../saves';
     import { deletetool } from '../delete';
     import PreviewPixel from './PreviewPixel.svelte';
@@ -19,11 +17,6 @@
             await updateDisplay();
         }
     }
-
-    onMount(async () => {
-        await fetchTheme();  
-    });
-
 </script>
 
 <button onclick={onClick} oncontextmenu={e => e.preventDefault()} class="flex shadow-md transition duration-200 ease-in-out max-h-42.5 flex-col items-center bg-black gap-1.5 p-[2px] rounded-md" 
