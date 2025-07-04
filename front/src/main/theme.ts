@@ -1,12 +1,12 @@
 import { writable } from 'svelte/store';
 
 let themes = [
-    {name: "red", color: 'bg-red-500', shadow: 'shadow-red-500/50'},
-    {name: "green", color: 'bg-green-500', shadow: 'shadow-green-500/50'},
-    {name: "blue", color: 'bg-blue-500', shadow: 'shadow-blue-500/50'},
-    {name: "purple", color: 'bg-purple-500', shadow: 'shadow-purple-500/50'},
-    {name: "orange", color: 'bg-orange-500', shadow: 'shadow-orange-500/50'},
-    {name: "white", color: 'bg-white', shadow: 'shadow-white/50'},
+    {name: "red", color: 'bg-red-500', shadow: 'shadow-red-500/70'},
+    {name: "green", color: 'bg-green-500', shadow: 'shadow-green-500/70'},
+    {name: "blue", color: 'bg-blue-500', shadow: 'shadow-blue-500/70'},
+    {name: "purple", color: 'bg-purple-500', shadow: 'shadow-purple-500/70'},
+    {name: "orange", color: 'bg-orange-500', shadow: 'shadow-orange-600/70'},
+    {name: "white", color: 'bg-white', shadow: 'shadow-white/70'},
 ];
 
 export let currentTheme = writable(themes[0]);
