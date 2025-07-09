@@ -1,6 +1,6 @@
 #include "deepsleep.h"
 
 void sleep(){
-    delay(100);
+    delay(500);
     esp_deep_sleep_start();
 }
