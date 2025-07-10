@@ -1,6 +1,7 @@
 <script lang="ts">
     import Preview from "./Preview.svelte";
     import { pics, fetchSaves } from "../saves";
+    import { deletetool } from "../delete";
     import { onMount } from "svelte";
     import Delete from "./Delete.svelte";
     import Export from "./Export.svelte";
@@ -22,7 +23,7 @@
       {/each}
     {/if}
   </div>
-  <div class="flex flex-row items-center justify-center gap-2 p-2 bg-neutral-600 w-full">
+  <div class="flex flex-row items-center justify-center gap-2 p-2 bg-neutral-600 w-full transition duration-200 ease-in-out" class:bg-red-800={$deletetool}>
     <Export />
     <Import />
   </div>
