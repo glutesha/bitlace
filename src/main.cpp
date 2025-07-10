@@ -49,8 +49,9 @@ void setup() {
   Serial.println("Display initialized");
 
   Serial.println("Initializing battery...");
-  static Battery power(3000, 4200, settingsDoc["battery"]);
-  power.begin(3300, settingsDoc["resistance"], &sigmoidal);
+  static Battery power(3000, 4200, settingsDoc["battery"].as<int>(), 12);
+  power.begin(3300, settingsDoc["resistance"].as<double>(), &sigmoidal);
+  Serial.println(power.voltage());
   Serial.println("Battery initialized");
 
   Serial.println("Initializing button...");
