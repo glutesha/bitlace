@@ -6,6 +6,7 @@ import Display from './lib/Display.svelte';
     import Settings from './lib/Settings.svelte';
     import Gallery from './lib/Gallery.svelte';
     import Save from './lib/Save.svelte';
+    import Export from './lib/Export.svelte';
 </script>
 
 <main>
@@ -31,5 +32,5 @@ import Display from './lib/Display.svelte';
     </div>
       <Gallery />
       <Settings />
-  </div>
+    </div>
 </main>
