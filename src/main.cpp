@@ -75,6 +75,7 @@ void setup() {
   Serial.print("Hidden: ");
   Serial.println(settingsDoc["hidden"].as<bool>());
   Serial.println("Starting Access Point...");
+  WiFi.setHostname("bitlace");
   WiFi.mode(WIFI_AP);
   WiFi.softAP(settingsDoc["ssid"].as<String>(), settingsDoc["password"].as<String>(), settingsDoc["channel"].as<int>(), settingsDoc["hidden"].as<boolean>());
   Serial.print("AP IP address: ");

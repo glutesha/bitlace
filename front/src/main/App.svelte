@@ -6,6 +6,14 @@
   import Settings from './lib/Settings.svelte';
   import Gallery from './lib/Gallery.svelte';
   import Save from './lib/Save.svelte';
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    if (location.hostname == "bitlace.local" || location.hostname == "192.168.4.1") {
+      document.getElementById("captive")?.remove();
+    }
+  });
+
 </script>
 
 <main>
@@ -13,7 +21,7 @@
   <div class="flex pt-13 flex-col items-center justify-center font-sans gap-2">
     <a href="http://192.168.4.1" class="flex flex-col items-center w-80" target="_blank" rel="noopener noreferrer">
       <p class="text-7xl font-bold text-white">Bit::lace</p>
-      <p class="text-2xl text-center text-cyan-400">Open 192.168.4.1 in browser for full functionality</p>
+      <p id="captive" class='text-2xl text-center text-cyan-400'>Open bitlace.local to make it work properly</p>
     </a>
     <div class="flex flex-row items-center gap-3">
       <img
