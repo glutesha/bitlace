@@ -15,6 +15,7 @@ class Display{
     unsigned long cueDelay;
     unsigned long cueLastMillis;
     bool displaystate[8][8];
+    bool flip;
     U8G2_MAX7219_8X8_F_4W_SW_SPI interface;
   public:
     Display(String, int, int, int, int, bool);
