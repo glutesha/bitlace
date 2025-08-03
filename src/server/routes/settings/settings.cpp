@@ -34,12 +34,7 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       settingsDoc["brightness"] = request->arg("brightness").toInt();
     }
     if(request->hasArg("hidden")){
-      if(request->arg("hidden").c_str() == "true"){
-        settingsDoc["hidden"] = true;
-      }
-      else{
-        settingsDoc["hidden"] = false;
-      }
+      settingsDoc["hidden"] = request->arg("hidden").c_str() == "true";
     }
     if(request->hasArg("data")){
       settingsDoc["data"] = request->arg("data").toInt();
@@ -66,7 +61,7 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       settingsDoc["resistance"] = request->arg("resistance").toInt();
     }
     if(request->hasArg("flip")){
-      settingsDoc["flip"] = request->arg("flip").toInt();
+      settingsDoc["flip"] = request->arg("flip").c_str() == "true";
     }
 
     save_settings(settingsDoc);
