@@ -65,6 +65,9 @@ server.on("/api/settings", HTTP_GET, [&settingsDoc](AsyncWebServerRequest *reque
       }
       settingsDoc["resistance"] = request->arg("resistance").toInt();
     }
+    if(request->hasArg("flip")){
+      settingsDoc["flip"] = request->arg("flip").toInt();
+    }
 
     save_settings(settingsDoc);
     error.close();
