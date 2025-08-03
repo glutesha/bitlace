@@ -42,15 +42,23 @@
                 </div>
                 <div class="flex flex-col gap-2 font-mono bg-neutral-900 shadow-2xl shadow-black p-5 rounded-2xl">
                     <p class="text-2xl text-center">// Display</p>
-                    <label>// Color (Interface) </label>
-                    <select id="color" name="color" class="bg-neutral-800 p-2 rounded-xl">
-                        <option>red</option>
-                        <option>green</option>
-                        <option>blue</option>
-                        <option>purple</option>
-                        <option>orange</option>
-                        <option>white</option>
-                    </select>
+                    <div class="flex flex-row gap-20 justify-center">
+                        <div class="flex flex-col">
+                            <label>// Color</label>
+                            <select id="color" name="color" class="bg-neutral-800 p-2 rounded-xl">
+                                <option>red</option>
+                                <option>green</option>
+                                <option>blue</option>
+                                <option>purple</option>
+                                <option>orange</option>
+                                <option>white</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col">
+                            <label>// Flip </label>
+                            <input class="h-10" id="flip" type="checkbox">
+                        </div>
+                    </div>
                     <div class="flex flex-col">
                         <label>// Brightness</label>
                         <input type="range" id="brightness" name="brightness" min="0" max="10" value="1">
