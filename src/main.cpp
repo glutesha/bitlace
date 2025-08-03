@@ -50,7 +50,7 @@ void setup() {
 
   Serial.println("Initializing battery...");
   static Battery power(3000, 4200, settingsDoc["battery"].as<int>(), 12);
-  power.begin(3300, settingsDoc["resistance"].as<double>(), &sigmoidal);
+  power.begin(2700, settingsDoc["resistance"].as<double>(), &sigmoidal);
   Serial.println(power.voltage());
   Serial.println("Battery initialized");
 
