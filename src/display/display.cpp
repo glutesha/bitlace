@@ -1,6 +1,6 @@
 #include "display.h"
 
-Display::Display(String color, int brightness, int clk, int data, int cs): 
+Display::Display(String color, int brightness, int clk, int data, int cs, bool flip): 
     clk(clk), 
     data(data), 
     cs(cs), 
@@ -16,6 +16,7 @@ Display::Display(String color, int brightness, int clk, int data, int cs):
     interface.setFontMode(1);
     interface.setContrast(brightness*16);
     interface.setBitmapMode(1);
+    interface.setFlipMode(flip);
     interface.clearBuffer();
 }
 

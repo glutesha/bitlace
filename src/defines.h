@@ -2,6 +2,7 @@
 #define SSID "bitlace-gluten"
 #define PASSWORD "supersecretpassword"
 #define CHANNEL 1
+#define FLIP true
 #define HIDDEN false
 #define DISPLAY_COLOR "red" // Options: red, green, blue, orange, purple, white
 #define DATA 9

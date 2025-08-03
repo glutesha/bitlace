@@ -45,7 +45,7 @@ void setup() {
   Serial.println("index.html found");
 
   Serial.println("Initializing display...");
-  current = new Display(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"]);
+  current = new Display(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"], settingsDoc["flip"]);
   Serial.println("Display initialized");
 
   Serial.println("Initializing battery...");

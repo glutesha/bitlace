@@ -17,7 +17,7 @@ class Display{
     bool displaystate[8][8];
     U8G2_MAX7219_8X8_F_4W_SW_SPI interface;
   public:
-    Display(String, int, int, int, int);
+    Display(String, int, int, int, int, bool);
     void setColor(String);
     String getColor();
     bool (&getState())[8][8];
