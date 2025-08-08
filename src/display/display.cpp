@@ -75,6 +75,11 @@ void Display::cue(){
     }
 }
 
+void Display::clear() {
+    interface.clearBuffer();
+    interface.sendBuffer();
+}
+
 void Display::setBrightness(int setbrightness){
     brightness = setbrightness;
     interface.setContrast(brightness*16);

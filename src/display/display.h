@@ -25,4 +25,5 @@ class Display{
     void drawArray(JsonArray);
     void setBrightness(int);
     void cue();
+    void clear();
 };

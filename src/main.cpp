@@ -22,6 +22,9 @@ JsonDocument settingsDoc;
 Display* current = nullptr;
 Button* input = nullptr;
 
+unsigned long input_time = 0;
+bool prev_read = false;
+
 void setup() {
   
   Serial.begin(9600);
@@ -97,8 +100,18 @@ void setup() {
 void loop() {
   dnsServer.processNextRequest();
   if(input->read()){
-    current->setBrightness(settingsDoc["brightness"].as<int>());
-    sleep();
+    prev_read = true;
+    if (millis() - input_time > BUTTON_PRESS_DELAY) {
+      current->clear();
+      sleep();
+    }
+  }
+  else {
+    if (prev_read) {
+      current->setBrightness(settingsDoc["brightness"].as<int>());
+      sleep();
+    }
+    input_time = millis();
   }
   current->cue();
 }
