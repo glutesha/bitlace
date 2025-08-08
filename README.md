@@ -1,6 +1,12 @@
 ![img](/img/bitlace.png)
 # BitLace ![hackatime](https://hackatime-badge.hackclub.com/U091LS2TL8M/bitlace)
-Bitlace is a DIY retro decoration featuring a monochrome MAX7219 8x8 dot display and an ESP32. You can draw on the display using the website, which is running inside a wifi hotspot made by the board. Tested on ESP32-C3 boards like SEEED XIAO and ESP32-C3 super mini. Very WIP.
+Bitlace is a DIY retro decoration featuring a monochrome MAX7219 8x8 dot display and an ESP32. You can draw on the display using the website, which is running inside a wifi hotspot made by the board. Tested on ESP32-C3 boards like SEEED XIAO and ESP32-C3 super mini. 
+## Usage
+Interfacing with the device relies on a tactile button.
+Press it once to wake the device up for web interface access and programming. Press it again to put it to sleep, and show the last state with set brightness. 
+Pressing the button for 2 seconds causes the device to completely turn off. Press it again and device will wake up back to the active state.
+
+When active, you can draw on it, save and load your drawing, set it up using the settings page and many more by going to the device's Wi-Fi hotspot and using the web interface
 ## Interface
 <img src="/img/interface1.png" height=600/> <img src="/img/interface2.png" height=600/> <img src="/img/interface3.png" height=600/> <img src="/img/interface4.png" height=600/> <img src="/img/interface5.png" height=600/>
 ## Building
