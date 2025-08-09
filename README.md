@@ -1,6 +1,6 @@
 
 
-# <img src="/img/bitlace.png" height=25/> BitLace ![hackatime](https://hackatime-badge.hackclub.com/U091LS2TL8M/bitlace)  
+# <img src="/img/bitlace.png" height=25/> Bit::lace ![hackatime](https://hackatime-badge.hackclub.com/U091LS2TL8M/bitlace)  
 Bitlace is a DIY retro decoration featuring a monochrome MAX7219 8x8 dot display and an ESP32. You can draw on the display using the website, which is running inside a wifi hotspot made by the board. Tested on ESP32-C3 boards like SEEED XIAO and ESP32-C3 super mini. 
 
 <img src="/img/irl_pic.jpg" />
