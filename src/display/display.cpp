@@ -3,15 +3,26 @@
 
 Display::Display(String color, int brightness, int clk, int data, int cs,
                  bool flip)
-    : clk(clk), data(data), cs(cs), color(color), brightness(brightness),
-      cueState(1), cueCounter(1), cueDelay(50), cueLastMillis(0), flip(flip),
+    : color(color), brightness(brightness), clk(clk), data(data), cs(cs),
+      cueState(1), cueCounter(1), shown(false), cueDelay(50), cueLastMillis(0), flip(flip),
       interface(U8G2_R0, clk, data, cs, U8X8_PIN_NONE, U8X8_PIN_NONE) {
+  pinMode(cs, OUTPUT);
+  digitalWrite(cs, HIGH);
+  pinMode(clk, OUTPUT);
+  digitalWrite(clk, LOW);
+  pinMode(data, OUTPUT);
+  digitalWrite(data, LOW);
   gpio_hold_dis((gpio_num_t)(clk));
   gpio_hold_dis((gpio_num_t)(data));
   gpio_hold_dis((gpio_num_t)(cs));
-  interface.begin();
+  gpio_deep_sleep_hold_dis();
+
+  if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_UNDEFINED) {
+    interface.initDisplay();
+    interface.setContrast(brightness * 16);
+  }
+  shown = false;
   interface.setFontMode(1);
-  interface.setContrast(brightness * 16);
   interface.setBitmapMode(1);
   interface.clearBuffer();
 }
@@ -21,6 +32,18 @@ void Display::setColor(String c) { color = c; }
 String Display::getColor() { return color; }
 
 bool (&Display::getState())[8][8] { return displaystate; }
+
+void Display::powerSaveDraw() {
+    interface.sendBuffer();
+    if (!shown) {
+        interface.setPowerSave(0);
+        shown = true;
+    }
+}
+
+void Display::powerSave() {
+    interface.setPowerSave(1);
+}
 
 void Display::drawArray(JsonArray display) {
   if (flip) {
@@ -45,7 +68,7 @@ void Display::drawArray(JsonArray display) {
       }
     }
   }
-  interface.sendBuffer();
+  powerSaveDraw();
 }
 
 void Display::cue() {
@@ -60,17 +83,17 @@ void Display::cue() {
     }
 
     interface.setContrast(cueCounter * 16);
-    interface.sendBuffer();
+    powerSaveDraw();
   }
 }
 
 void Display::clear() {
   interface.clearBuffer();
-  interface.sendBuffer();
+  powerSaveDraw();
 }
 
 void Display::setBrightness(int setbrightness) {
   brightness = setbrightness;
   interface.setContrast(brightness * 16);
-  interface.sendBuffer();
+  powerSaveDraw();
 }

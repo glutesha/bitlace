@@ -1,6 +1,6 @@
 #include "button.h"
 
-Button::Button(int pin): pin(pin), lastState(HIGH), debounce(40), state(LOW) {
+Button::Button(int pin): pin(pin), state(HIGH), lastState(HIGH), debounce(60), lastDebounce(0) {
     pinMode(pin, INPUT_PULLUP);
 }
 

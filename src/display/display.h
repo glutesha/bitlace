@@ -12,6 +12,7 @@ class Display{
     int cs;
     int cueState;
     int cueCounter;
+    bool shown;
     unsigned long cueDelay;
     unsigned long cueLastMillis;
     bool displaystate[8][8];
@@ -24,6 +25,8 @@ class Display{
     bool (&getState())[8][8];
     void drawArray(JsonArray);
     void setBrightness(int);
+    void powerSaveDraw();
+    void powerSave();
     void cue();
     void clear();
 };

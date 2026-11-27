@@ -27,7 +27,6 @@ bool prev_read = false;
 
 void setup()
 {
-
     Serial.begin(9600);
     Serial.println("Starting...");
 
@@ -40,17 +39,37 @@ void setup()
     Serial.println("Loading settings...");
     load_settings(settingsDoc);
 
+    Serial.println("Initializing display...");
+    current = new Display(settingsDoc["color"], settingsDoc["brightness"],
+        settingsDoc["clk"], settingsDoc["data"],
+        settingsDoc["cs"], settingsDoc["flip"]);
+    Serial.println("Display initialized");
+
+    Serial.println("Initializing button...");
+    input = new Button(settingsDoc["button"].as<int>());
+    setWakeUp(settingsDoc["button"].as<int>());
+    delay(50);
+    Serial.println("Button initialized");
+
     if (!LittleFS.exists("/dist/index.html")) {
         Serial.println("index.html not found");
         return;
     }
     Serial.println("index.html found");
 
-    Serial.println("Initializing display...");
-    current = new Display(settingsDoc["color"], settingsDoc["brightness"],
-        settingsDoc["clk"], settingsDoc["data"],
-        settingsDoc["cs"], settingsDoc["flip"]);
-    Serial.println("Display initialized");
+    if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_TIMER) {
+        if (settingsDoc["sleep"] == true) {
+            current->clear();
+            current->powerSave();
+        } else {
+            load_state(*current);
+            current->setBrightness(settingsDoc["brightness"].as<int>());
+        }
+        sleep(settingsDoc["data"], settingsDoc["clk"], settingsDoc["cs"]);
+    }
+
+    Serial.println("Loading state...");
+    load_state(*current);
 
     Serial.println("Initializing battery...");
 
@@ -59,14 +78,6 @@ void setup()
     Serial.println(power.voltage());
 
     Serial.println("Battery initialized");
-
-    Serial.println("Initializing button...");
-    input = new Button(settingsDoc["button"].as<int>());
-    setWakeUp(settingsDoc["button"].as<int>());
-    Serial.println("Button initialized");
-
-    Serial.println("Loading state...");
-    load_state(*current);
 
     Serial.println("Setting up webpage..");
     enable_routes(server, *current, settingsDoc, power);
@@ -100,6 +111,9 @@ void setup()
     server.begin();
     Serial.println("Server started");
     Serial.println("Setup complete");
+
+    input_time = millis();
+    prev_read = false;
 }
 
 void loop()
@@ -109,11 +123,16 @@ void loop()
         prev_read = true;
         if (millis() - input_time > BUTTON_PRESS_DELAY) {
             current->clear();
+            current->powerSave();
+            settingsDoc["sleep"] = true;
+            save_settings(settingsDoc);
             sleep(settingsDoc["data"], settingsDoc["clk"], settingsDoc["cs"]);
         }
     } else {
         if (prev_read) {
             current->setBrightness(settingsDoc["brightness"].as<int>());
+            settingsDoc["sleep"] = false;
+            save_settings(settingsDoc);
             sleep(settingsDoc["data"], settingsDoc["clk"], settingsDoc["cs"]);
         }
         input_time = millis();
