@@ -1,87 +1,76 @@
 #include "display.h"
+#include "driver/gpio.h"
 
-Display::Display(String color, int brightness, int clk, int data, int cs, bool flip): 
-    clk(clk), 
-    data(data), 
-    cs(cs), 
-    color(color), 
-    brightness(brightness),
-    cueState(1),
-    cueCounter(1),
-    cueDelay(50),
-    cueLastMillis(0),
-    flip(flip),
-    interface(U8G2_R0, clk, data, cs, U8X8_PIN_NONE, U8X8_PIN_NONE)
-{
-    interface.begin();
-    interface.setFontMode(1);
-    interface.setContrast(brightness*16);
-    interface.setBitmapMode(1);
-    interface.clearBuffer();
+Display::Display(String color, int brightness, int clk, int data, int cs,
+                 bool flip)
+    : clk(clk), data(data), cs(cs), color(color), brightness(brightness),
+      cueState(1), cueCounter(1), cueDelay(50), cueLastMillis(0), flip(flip),
+      interface(U8G2_R0, clk, data, cs, U8X8_PIN_NONE, U8X8_PIN_NONE) {
+  gpio_hold_dis((gpio_num_t)(clk));
+  gpio_hold_dis((gpio_num_t)(data));
+  gpio_hold_dis((gpio_num_t)(cs));
+  interface.begin();
+  interface.setFontMode(1);
+  interface.setContrast(brightness * 16);
+  interface.setBitmapMode(1);
+  interface.clearBuffer();
 }
 
-void Display::setColor(String c){
-    color = c;
-}
+void Display::setColor(String c) { color = c; }
 
-String Display::getColor(){
-    return color;
-}
+String Display::getColor() { return color; }
 
-bool (&Display::getState())[8][8] {
-    return displaystate;
-}
+bool (&Display::getState())[8][8] { return displaystate; }
 
-void Display::drawArray(JsonArray display){
-    if(flip){
-        for (int row = 7; row >= 0; row--) {
-            JsonArray rowArray = display[7 - row].as<JsonArray>();
-            JsonArray realrowArray = display[row].as<JsonArray>();
-            for (int col = 7; col >= 0; col--) {
-            int color = rowArray[7 - col] ? 1 : 0;
-            interface.setDrawColor(color);
-            interface.drawPixel(col, row);
-            displaystate[row][col] = realrowArray[col];
-            }
-        }
+void Display::drawArray(JsonArray display) {
+  if (flip) {
+    for (int row = 7; row >= 0; row--) {
+      JsonArray rowArray = display[7 - row].as<JsonArray>();
+      JsonArray realrowArray = display[row].as<JsonArray>();
+      for (int col = 7; col >= 0; col--) {
+        int color = rowArray[7 - col] ? 1 : 0;
+        interface.setDrawColor(color);
+        interface.drawPixel(col, row);
+        displaystate[row][col] = realrowArray[col];
+      }
     }
-    else{
-        for (int row = 0; row < 8; row++) {
-            JsonArray rowArray = display[row].as<JsonArray>();
-            for (int col = 0; col < 8; col++) {
-            int color = rowArray[col] ? 1 : 0;
-            interface.setDrawColor(color);
-            interface.drawPixel(col, row);
-            displaystate[row][col] = rowArray[col];
-            }
-        }
+  } else {
+    for (int row = 0; row < 8; row++) {
+      JsonArray rowArray = display[row].as<JsonArray>();
+      for (int col = 0; col < 8; col++) {
+        int color = rowArray[col] ? 1 : 0;
+        interface.setDrawColor(color);
+        interface.drawPixel(col, row);
+        displaystate[row][col] = rowArray[col];
+      }
     }
+  }
+  interface.sendBuffer();
+}
+
+void Display::cue() {
+  if ((millis() - cueLastMillis) > cueDelay) {
+    cueLastMillis = millis();
+    cueCounter += cueState;
+    if (cueCounter == 10) {
+      cueState = -1;
+    }
+    if (cueCounter == 1) {
+      cueState = 1;
+    }
+
+    interface.setContrast(cueCounter * 16);
     interface.sendBuffer();
-}
-
-void Display::cue(){
-    if((millis() - cueLastMillis) > cueDelay){
-        cueLastMillis = millis();
-        cueCounter += cueState;
-        if(cueCounter == 10){
-            cueState = -1;
-        }
-        if(cueCounter == 1){
-            cueState = 1;
-        }     
-        
-        interface.setContrast(cueCounter*16);
-        interface.sendBuffer();
-    }
+  }
 }
 
 void Display::clear() {
-    interface.clearBuffer();
-    interface.sendBuffer();
+  interface.clearBuffer();
+  interface.sendBuffer();
 }
 
-void Display::setBrightness(int setbrightness){
-    brightness = setbrightness;
-    interface.setContrast(brightness*16);
-    interface.sendBuffer();
+void Display::setBrightness(int setbrightness) {
+  brightness = setbrightness;
+  interface.setContrast(brightness * 16);
+  interface.sendBuffer();
 }
