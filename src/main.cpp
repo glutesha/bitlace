@@ -1,19 +1,19 @@
 #include <Arduino.h>
-#include <WiFi.h>
-#include <DNSServer.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <settings.h>
-#include <LittleFS.h>
 #include <ArduinoJson.h>
+#include <AsyncTCP.h>
 #include <Battery.h>
+#include <DNSServer.h>
+#include <ESPAsyncWebServer.h>
+#include <LittleFS.h>
+#include <WiFi.h>
+#include <settings.h>
 
-#include "display/display.h"
-#include "display/state/state.h"
-#include "settings/settings.h"
-#include "server/server.h"
 #include "button/button.h"
 #include "deepsleep/deepsleep.h"
+#include "display/display.h"
+#include "display/state/state.h"
+#include "server/server.h"
+#include "settings/settings.h"
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
@@ -25,93 +25,98 @@ Button* input = nullptr;
 unsigned long input_time = 0;
 bool prev_read = false;
 
-void setup() {
-  
-  Serial.begin(9600);
-  Serial.println("Starting...");
+void setup()
+{
 
-  if(!LittleFS.begin()) {
-    Serial.println("Failed to mount file system");
-    return;
-  }
-  Serial.println("File system mounted");
+    Serial.begin(9600);
+    Serial.println("Starting...");
 
-  Serial.println("Loading settings...");
-  load_settings(settingsDoc);
+    if (!LittleFS.begin()) {
+        Serial.println("Failed to mount file system");
+        return;
+    }
+    Serial.println("File system mounted");
 
-  if(!LittleFS.exists("/dist/index.html")) {
-    Serial.println("index.html not found");
-    return;
-  }
-  Serial.println("index.html found");
+    Serial.println("Loading settings...");
+    load_settings(settingsDoc);
 
-  Serial.println("Initializing display...");
-  current = new Display(settingsDoc["color"], settingsDoc["brightness"], settingsDoc["clk"], settingsDoc["data"], settingsDoc["cs"], settingsDoc["flip"]);
-  Serial.println("Display initialized");
+    if (!LittleFS.exists("/dist/index.html")) {
+        Serial.println("index.html not found");
+        return;
+    }
+    Serial.println("index.html found");
 
-  Serial.println("Initializing battery...");
-  
-  static Battery power(3000, 4200, settingsDoc["battery"].as<int>(), 12);
-  power.begin(3100, settingsDoc["resistance"].as<double>(), &asigmoidal);
-  Serial.println(power.voltage());
+    Serial.println("Initializing display...");
+    current = new Display(settingsDoc["color"], settingsDoc["brightness"],
+        settingsDoc["clk"], settingsDoc["data"],
+        settingsDoc["cs"], settingsDoc["flip"]);
+    Serial.println("Display initialized");
 
-  Serial.println("Battery initialized");
+    Serial.println("Initializing battery...");
 
-  Serial.println("Initializing button...");
-  input = new Button(settingsDoc["button"].as<int>());
-  setWakeUp(settingsDoc["button"].as<int>());
-  Serial.println("Button initialized");
+    static Battery power(3000, 4200, settingsDoc["battery"].as<int>(), 12);
+    power.begin(3100, settingsDoc["resistance"].as<double>(), &asigmoidal);
+    Serial.println(power.voltage());
 
-  Serial.println("Loading state...");
-  load_state(*current);
-  
-  Serial.println("Setting up webpage..");
-  enable_routes(server, *current, settingsDoc, power);
-  Serial.println("Webpage setup complete");
+    Serial.println("Battery initialized");
 
-  Serial.print("Setting up AP: ");
-  Serial.println(settingsDoc["ssid"].as<String>());
-  Serial.print("Password: ");
-  Serial.println(settingsDoc["password"].as<String>());
-  Serial.print("Channel: ");
-  Serial.println(settingsDoc["channel"].as<String>());
-  Serial.print("Hidden: ");
-  Serial.println(settingsDoc["hidden"].as<bool>());
-  Serial.println("Starting Access Point...");
-  WiFi.setHostname("bitlace");
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(settingsDoc["ssid"].as<String>(), settingsDoc["password"].as<String>(), settingsDoc["channel"].as<int>(), settingsDoc["hidden"].as<boolean>());
-  Serial.print("AP IP address: ");
-  Serial.println(WiFi.softAPIP());
-  Serial.print("AP MAC address: ");
-  Serial.println(WiFi.softAPmacAddress());
+    Serial.println("Initializing button...");
+    input = new Button(settingsDoc["button"].as<int>());
+    setWakeUp(settingsDoc["button"].as<int>());
+    Serial.println("Button initialized");
 
-  dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
-  Serial.println("Starting DNS server...");
-  dnsServer.start(53, "*", WiFi.softAPIP());
-  Serial.println("DNS server started");
+    Serial.println("Loading state...");
+    load_state(*current);
 
-  Serial.println("Starting server...");
-  server.begin();
-  Serial.println("Server started");
-  Serial.println("Setup complete");
+    Serial.println("Setting up webpage..");
+    enable_routes(server, *current, settingsDoc, power);
+    Serial.println("Webpage setup complete");
+
+    Serial.print("Setting up AP: ");
+    Serial.println(settingsDoc["ssid"].as<String>());
+    Serial.print("Password: ");
+    Serial.println(settingsDoc["password"].as<String>());
+    Serial.print("Channel: ");
+    Serial.println(settingsDoc["channel"].as<String>());
+    Serial.print("Hidden: ");
+    Serial.println(settingsDoc["hidden"].as<bool>());
+    Serial.println("Starting Access Point...");
+    WiFi.setHostname("bitlace");
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(
+        settingsDoc["ssid"].as<String>(), settingsDoc["password"].as<String>(),
+        settingsDoc["channel"].as<int>(), settingsDoc["hidden"].as<boolean>());
+    Serial.print("AP IP address: ");
+    Serial.println(WiFi.softAPIP());
+    Serial.print("AP MAC address: ");
+    Serial.println(WiFi.softAPmacAddress());
+
+    dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
+    Serial.println("Starting DNS server...");
+    dnsServer.start(53, "*", WiFi.softAPIP());
+    Serial.println("DNS server started");
+
+    Serial.println("Starting server...");
+    server.begin();
+    Serial.println("Server started");
+    Serial.println("Setup complete");
 }
 
-void loop() {
-  dnsServer.processNextRequest();
-  if(input->read()){
-    prev_read = true;
-    if (millis() - input_time > BUTTON_PRESS_DELAY) {
-      current->clear();
-      sleep();
+void loop()
+{
+    dnsServer.processNextRequest();
+    if (input->read()) {
+        prev_read = true;
+        if (millis() - input_time > BUTTON_PRESS_DELAY) {
+            current->clear();
+            sleep(settingsDoc["data"], settingsDoc["clk"], settingsDoc["cs"]);
+        }
+    } else {
+        if (prev_read) {
+            current->setBrightness(settingsDoc["brightness"].as<int>());
+            sleep(settingsDoc["data"], settingsDoc["clk"], settingsDoc["cs"]);
+        }
+        input_time = millis();
     }
-  }
-  else {
-    if (prev_read) {
-      current->setBrightness(settingsDoc["brightness"].as<int>());
-      sleep();
-    }
-    input_time = millis();
-  }
-  current->cue();
+    current->cue();
 }

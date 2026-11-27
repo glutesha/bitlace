@@ -1,19 +1,19 @@
 #include "settings.h"
 
-void load_settings(JsonDocument &settingsDoc){
+void load_settings(JsonDocument &settingsDoc) {
   bool loaderr = false;
   File settingsFile = LittleFS.open("/settings.json", "r");
-  if(!settingsFile){
+  if (!settingsFile) {
     Serial.println("No file!");
     loaderr = true;
   }
   DeserializationError err = deserializeJson(settingsDoc, settingsFile);
-  if(err){
+  if (err) {
     Serial.print("settings deserializeJson() ");
     Serial.println(err.c_str());
     loaderr = true;
   }
-  if(loaderr){
+  if (loaderr) {
     settingsDoc["ssid"] = SSID;
     settingsDoc["password"] = PASSWORD;
     settingsDoc["hidden"] = HIDDEN;

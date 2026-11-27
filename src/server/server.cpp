@@ -1,6 +1,7 @@
 #include "server.h"
 
-void enable_routes(AsyncWebServer &server, Display &current, JsonDocument &settings, Battery &power){
+void enable_routes(AsyncWebServer &server, Display &current,
+                   JsonDocument &settings, Battery &power) {
   app(server);
   settings_form(server, settings);
   display_color(server, current);
