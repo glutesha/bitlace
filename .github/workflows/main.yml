@@ -1,6 +1,12 @@
 name: PlatformIO CI
 
-on: [push]
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -19,5 +25,12 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - name: Build PlatformIO Project
-        run: pio run
+      - name: Merge firmware
+        run: bash merge_fw_build.sh
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: merged_fw.bin
+          generate_release_notes: true
